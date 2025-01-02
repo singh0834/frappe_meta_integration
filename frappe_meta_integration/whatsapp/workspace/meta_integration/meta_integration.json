@@ -1,0 +1,55 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"YBBzcNWVc5\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Meta Integration</span>\",\"col\":12}},{\"id\":\"sa3WXt4tyC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WhatsApp Cloud API Settings\",\"col\":4}},{\"id\":\"18IYxYRTfo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WhatsApp Message Template\",\"col\":4}},{\"id\":\"fVs7ZNT8d3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WhatsApp Communication\",\"col\":4}},{\"id\":\"ESDzUkK-NP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WhatsApp Campaign\",\"col\":3}}]",
+ "creation": "2022-11-07 12:34:58.594498",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "integration",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Meta Integration",
+ "links": [],
+ "modified": "2023-03-01 12:26:53.994695",
+ "modified_by": "Administrator",
+ "module": "WhatsApp",
+ "name": "Meta Integration",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 10.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "WhatsApp Campaign",
+   "link_to": "WhatsApp Campaign",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "WhatsApp Cloud API Settings",
+   "link_to": "WhatsApp Cloud API Settings",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "WhatsApp Message Template",
+   "link_to": "WhatsApp Message Template",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "WhatsApp Communication",
+   "link_to": "WhatsApp Communication",
+   "type": "DocType"
+  }
+ ],
+ "title": "Meta Integration"
+}

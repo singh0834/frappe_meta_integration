@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:template_name",
+ "creation": "2024-12-24 17:06:15.395967",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "template_name",
+  "enabled",
+  "template",
+  "column_break_yqxo",
+  "header_has_media",
+  "media_type",
+  "header",
+  "footer",
+  "category",
+  "language_code",
+  "namespace",
+  "section_break_slek",
+  "parameter"
+ ],
+ "fields": [
+  {
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "label": "Template Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "language_code",
+   "fieldtype": "Data",
+   "label": "Language Code"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "\nUTILITY\nMARKETING\nAUTHENTICATION"
+  },
+  {
+   "fieldname": "column_break_yqxo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "header_has_media",
+   "fieldtype": "Check",
+   "label": "Header Has Media"
+  },
+  {
+   "depends_on": "header_has_media",
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Media Type",
+   "mandatory_depends_on": "header_has_media",
+   "options": "document\nimage\nvideo"
+  },
+  {
+   "fieldname": "header",
+   "fieldtype": "Data",
+   "label": "Header",
+   "mandatory_depends_on": "eval: doc.header_has_media == 0"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Data",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "section_break_slek",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Text",
+   "label": "Template"
+  },
+  {
+   "fieldname": "parameter",
+   "fieldtype": "Table",
+   "label": "Parameter",
+   "options": "WhatsApp Template Map"
+  },
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "namespace",
+   "fieldtype": "Data",
+   "label": "Namespace"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-25 16:13:32.826153",
+ "modified_by": "Administrator",
+ "module": "WhatsApp",
+ "name": "WhatsApp Message MSG91",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
