@@ -59,173 +59,133 @@ function set_template_parameters(frm){
   }
 }
 
+//updated code - sukhman
 frappe.ui.form.on('WhatsApp Campaign', {
-  setup: function(frm) {
-      frappe.dom.set_style(`
-          .filter-section {
-              padding: 15px;
-              margin: 10px 0;
-              border: 1px solid var(--border-color);
-              border-radius: var(--border-radius);
-          }
-          .filter-section .filter-box {
-              margin: 10px 0;
-          }
-          .filter-section .btn-remove {
-              padding: 3px 5px;
-              margin-left: 10px;
-          }
-          .filter-section .filter-field {
-              display: flex;
-              align-items: center;
-              gap: 10px;
-          }
-          .filter-actions {
-              display: flex;
-              gap: 10px; /* Ensures buttons are spaced out */
-              align-items: center; /* Vertically align buttons */
-          }
-          .filter-actions button {
-              padding: 4px 8px;
-              font-size: 12px; /* Ensure buttons are not too large */
-          }
-      `);
-  },
-
   refresh: function(frm) {
       frm.trigger('setup_filters');
+      
+      // Add styles
+      if (!document.getElementById('whatsapp-campaign-styles')) {
+          const styleSheet = document.createElement('style');
+          styleSheet.id = 'whatsapp-campaign-styles';
+          styleSheet.textContent = `
+              .filter-section {
+                  margin: 15px 0;
+                  padding: 15px;
+                  border: 1px solid #d1d8dd;
+                  border-radius: 4px;
+                  background-color: #f7fafc;
+              }
+
+              .filter-area {
+                  margin-bottom: 15px;
+              }
+
+              .filter-toolbar {
+                  display: flex;
+                  justify-content: flex-end;
+                  padding-top: 10px;
+                  border-top: 1px solid #ebeef0;
+              }
+
+              .filter-buttons {
+                  display: flex;
+                  gap: 8px;
+              }
+
+              .filter-buttons .btn {
+                  padding: 4px 12px;
+                  font-size: 12px;
+              }
+
+              .filter-group .filter-field {
+                  margin-bottom: 8px;
+              }
+
+              .filter-group .remove-filter {
+                  color: #dc2626;
+              }
+              
+              .loading-message {
+                  margin-top: 10px;
+                  color: #4a5568;
+                  font-style: italic;
+              }
+          `;
+          document.head.appendChild(styleSheet);
+      }
   },
 
   setup_filters: function(frm) {
       if (!frm.filter_wrapper) {
-          frm.filter_wrapper = $('<div class="filter-section">').insertBefore(
-              frm.get_field('recipients').wrapper
-          );
+          frm.filter_wrapper = $('<div class="filter-section">');
+          let recipients_field = frm.get_field('recipients');
+          if (recipients_field && recipients_field.wrapper) {
+              frm.filter_wrapper.insertBefore(recipients_field.wrapper);
+          }
+      }
+      
+      if (frm.doc.select_doctype) {
+          frm.trigger('select_doctype');
       }
   },
 
-  custom_select_doctype: function(frm) {
-      if (frm.doc.custom_select_doctype) {
-          if (frm.filter_wrapper) {
-              frm.filter_wrapper.empty();
-          }
+  select_doctype: function(frm) {
+      if (!frm.doc.select_doctype) return;
 
-          frappe.model.with_doctype(frm.doc.custom_select_doctype, () => {
-              // Initialize filter group
-              frm.filter_group = new frappe.ui.FilterGroup({
-                  parent: frm.filter_wrapper,
-                  doctype: frm.doc.custom_select_doctype,
-                  on_change: function() {
-                      frm.filter_list = frm.filter_group.get_filters();
+      frm.filter_wrapper.empty();
+
+      frappe.model.with_doctype(frm.doc.select_doctype, () => {
+          let filter_area = $('<div class="filter-area">').appendTo(frm.filter_wrapper);
+          
+          frm.filter_group = new frappe.ui.FilterGroup({
+              parent: filter_area,
+              doctype: frm.doc.select_doctype,
+              on_change: function() {
+                  frm.filter_list = this.get_filters();
+              }
+          });
+
+          let filter_toolbar = $('<div class="filter-toolbar">').appendTo(frm.filter_wrapper);
+          let loading_message = $('<div class="loading-message">').hide().appendTo(frm.filter_wrapper);
+          
+          let buttons = $(`
+              <div class="filter-buttons">
+                  <button class="btn btn-xs btn-primary apply-filters">Apply</button>
+              </div>
+          `).appendTo(filter_toolbar);
+
+          buttons.find('.apply-filters').on('click', () => {
+              if (!frm.filter_list?.length) {
+                  frappe.msgprint('Please set at least one filter');
+                  return;
+              }
+
+              loading_message.html('Finding recipients...').show();
+
+              frappe.call({
+                  method: 'apply_filters_and_get_recipients',
+                  doc: frm.doc,
+                  args: { filters: frm.filter_list },
+                  freeze: true,
+                  freeze_message: 'Finding recipients...',
+                  callback: function(r) {
+                      loading_message.hide();
+                      if (!r.message) return;
+                      
+                      frm.clear_table('recipients');
+                      r.message.forEach(recipient => {
+                          let row = frm.add_child('recipients');
+                          row.whatsapp_number = recipient.whatsapp_number;
+                          row.person_name = recipient.person_name;
+                      });
+                      frm.refresh_field('recipients');
+                      frappe.show_alert('Recipients updated', 5);
                   }
               });
-
-              // Extend FilterGroup functionality
-              frm.filter_group.make = function() {
-                  this._super();
-
-                  // Show the remove button
-                  this.wrapper.find('.btn-remove').show();
-
-                  // Add Apply Filters button next to Clear Filters
-                  let filter_actions = this.wrapper.find('.filter-actions');
-                  if (!filter_actions.length) {
-                      filter_actions = $('<div class="filter-actions">').appendTo(this.wrapper);
-                  }
-
-                  // Remove existing Clear Filters button
-                  this.wrapper.find('.clear-filters').remove();
-
-                  // Add both buttons with icons
-                  $(`
-                      <button class="btn btn-default btn-sm clear-filters" title="Clear Filters">
-                          <span class="filtername">Clear Filters</span>
-                      </button>
-                      <button class="btn btn-default btn-sm apply-filters" title="Apply Filters">
-                          <span class="filtername">Apply Filters</span>
-                      </button>
-                  `).appendTo(filter_actions);
-
-                  // Handle Clear Filters click
-                  filter_actions.find('.clear-filters').on('click', () => {
-                      this.clear();
-                      frm.filter_list = [];
-                  });
-
-                  // Handle Apply Filters click
-                  filter_actions.find('.apply-filters').on('click', () => {
-                      if (!frm.filter_list || !frm.filter_list.length) {
-                          frappe.msgprint('Please set at least one filter');
-                          return;
-                      }
-
-                      frappe.call({
-                          method: 'apply_filters_and_get_recipients',
-                          doc: frm.doc,
-                          args: {
-                              filters: frm.filter_list
-                          },
-                          freeze: true,
-                          freeze_message: 'Fetching Recipients...',
-                          callback: function(r) {
-                              if (r.message) {
-                                  frm.clear_table('recipients');
-                                  r.message.forEach(recipient => {
-                                      let row = frm.add_child('recipients');
-                                      row.whatsapp_number = recipient.whatsapp_number;
-                                      row.person_name = recipient.person_name;
-                                  });
-                                  frm.refresh_field('recipients');
-                                  frappe.show_alert({
-                                      message: 'Recipients updated successfully',
-                                      indicator: 'green'
-                                  });
-                              }
-                          }
-                      });
-                  });
-
-                  // Ensure Apply Filters button is visible and styled similarly to Clear Filters
-                  filter_actions.find('.apply-filters').show();
-                  
-                  this.get_doctype_fields = function() {
-                      let fields = [];
-                      let meta = frappe.get_meta(this.doctype);
-
-                      meta.fields.forEach(df => {
-                          if (!['Section Break', 'Column Break', 'HTML', 'Button'].includes(df.fieldtype)) {
-                              fields.push({
-                                  label: `${df.label || df.fieldname}`,
-                                  fieldname: df.fieldname,
-                                  fieldtype: df.fieldtype,
-                                  options: df.options,
-                              });
-                          }
-                      });
-
-                      return fields;
-                  };
-              };
-
-              // Override get_filter to ensure value field is shown
-              frm.filter_group.get_filter = function(doctype, fieldname) {
-                  let filter = this._super(doctype, fieldname);
-                  
-                  if (filter) {
-                      setTimeout(() => {
-                          filter.$filter_field_area.show();
-                          filter.make_field();
-                      }, 100);
-                  }
-                  
-                  return filter;
-              };
-
-              // Add default empty filter
-              frm.filter_group.add_filter(frm.doc.custom_select_doctype, '', '=', '');
-              frm.filter_group.show();
           });
-      }
+
+          frm.filter_group.add_filter(frm.doc.select_doctype, '', '=', '');
+      });
   }
 });
-

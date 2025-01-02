@@ -148,12 +148,6 @@ function fetch_template_data(templateId, d, context) {
 function process_template_data(d, data, context) {
     let elements = document.getElementsByClassName("modal-body ui-front");
 	Array.from(elements).forEach((e) => { e.addEventListener("click", function () { verify(d, data, context, cur_frm.dialog_header_html); }); })
-    // document.querySelectorAll(".modal-body.ui-front").forEach((e) => {
-    //     e.addEventListener("click", function () {
-    //         console.log(context)
-    //         verify(d, data, context, cur_frm.dialog_header_html);
-    //     });
-    // });
 
     let option_list = ["Attachment"];
 
@@ -172,9 +166,10 @@ function process_template_data(d, data, context) {
 
 // Create fields for the template parameters
 function create_template_field(param, option_list, d, context) {
-    console.log()
+    console.log(param, option_list, context)
     // Create Select field for header location
-    if (param.location === "header") {
+    console.log(param)
+    if (param.location === "header" && param.type != "text") {
         d.make_field({
             "fieldtype": "Select",
             "label": param.field_name,
@@ -213,7 +208,7 @@ function create_template_field(param, option_list, d, context) {
     d.get_field(`${param.field_name}_print_format`).refresh();
     d.get_field(param.field_name).refresh();
     context[param.field_name] = "";
-    if (param.location != "header") {
+    if (param.type == "text") {
         let data = get_data_link_dict()
         d.get_field(param.field_name).set_data(data)
     }
@@ -371,7 +366,7 @@ function verify(d, data, context, header_html) {
             else if (d.get_field(key + "_attachment").value && d.get_field(key + "_attachment").value.includes("https://")) {
                 context[key] = d.get_field(key + "_attachment").value;
             } else {
-                context[key] = ("https://" + frappe.boot.sitename + d.get_field(key + "_attachment").value);
+                context[key] = (d.get_field(key + "_attachment").value);
             }
         } else if ((d.get_field(key).input.value).replace(", ", "") === "Print Format") {
             frappe.call({

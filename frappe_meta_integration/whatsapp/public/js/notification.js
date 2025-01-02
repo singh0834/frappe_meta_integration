@@ -155,7 +155,7 @@ frappe.ui.form.on('Notification', {
 
 						}
 						$(d.get_field('content').wrapper).html(
-							`<div class="card mb-3 h-100"><div class="card-body">` + header_html + data.message_body + `<br><br></div></div>`
+							`<div class="card mb-3 h-100"><div class="card-body">${data.template}<br><br></div></div>`
 						);
 						cur_frm.dialog_d = d
 						cur_frm.dialog_context = context
@@ -260,11 +260,11 @@ function verify(d, context, data, header_html, data_dict) {
 			else if (d.get_field(key + "_attachment").value && d.get_field(key + "_attachment").value.includes("https://")) {
 				context[key] = (d.get_field(key + "_attachment").value)
 			} else {
-				context[key] = ("https://" + frappe.boot.sitename + d.get_field(key + "_attachment").value)
+				context[key] = (d.get_field(key + "_attachment").value)
 			}
 		} else if ((d.get_field(key).input.value).replace(", ", "") == "Print Format") {
 			frappe.call({
-				method: "journeys.users.get_attach_link",
+				method: "frappe_meta_integration.whatsapp.pdf_utils.get_attach_link",
 				args: { "doc": { "doctype": cur_frm.doc.doctype, "docname": cur_frm.doc.name }, "print_format": d.get_field(key + "_print_format").value },
 				callback: (r) => {
 					context[key] = r.message
