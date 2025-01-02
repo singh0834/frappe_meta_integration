@@ -57,7 +57,7 @@ Meta Cloud API Integration for frappe framework
 
 ### How to Install
 
-1. `bench get-app https://github.com/efeone/frappe_meta_integration.git`
+1. `bench get-app https://github.com/singh0834/frappe_meta_integration.git`
 2. `bench setup requirements`
 3. `bench build --app frappe_meta_integration`
 4. `bench --site [your.site.name] install-app frappe_meta_integration`
