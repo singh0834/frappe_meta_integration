@@ -1,0 +1,195 @@
+{
+ "actions": [],
+ "autoname": "field:template_name",
+ "creation": "2022-06-30 11:23:25.726343",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "template_name",
+  "id",
+  "template",
+  "add_variable",
+  "parameter_count",
+  "column_break_7",
+  "language",
+  "language_code",
+  "category",
+  "header_has_media",
+  "media_type",
+  "header",
+  "footer",
+  "is_existing_template",
+  "parameters_section",
+  "parameters",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "description": "For Existing Template you should need to keep name as it is in Whats App Cloud API",
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Template Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "depends_on": "parameter_count",
+   "fieldname": "parameters",
+   "fieldtype": "Table",
+   "label": "Parameters",
+   "mandatory_depends_on": "parameter_count",
+   "options": "WhatsApp Message Template Item"
+  },
+  {
+   "fieldname": "language_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Language Code",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "parameter_count",
+   "fieldtype": "Int",
+   "label": "Parameter Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "parameters_section",
+   "fieldtype": "Section Break",
+   "label": "Parameters"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "WhatsApp Message Template",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "id",
+   "fieldtype": "Data",
+   "label": "ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Code",
+   "label": "Template",
+   "options": "HTML"
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Link",
+   "label": "Language",
+   "options": "Language",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "\nUTILITY\nMARKETING\nAUTHENTICATION",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.header_has_media == 0",
+   "fieldname": "header",
+   "fieldtype": "Data",
+   "label": "Header"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Data",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "add_variable",
+   "fieldtype": "Button",
+   "label": "Add Variable"
+  },
+  {
+   "default": "0",
+   "description": "For Existing Template in WhatsApp Cloud API",
+   "fieldname": "is_existing_template",
+   "fieldtype": "Check",
+   "label": "Is Existing Template"
+  },
+  {
+   "depends_on": "header_has_media",
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Media Type",
+   "mandatory_depends_on": "header_has_media",
+   "options": "document\nimage\nvideo"
+  },
+  {
+   "default": "0",
+   "fieldname": "header_has_media",
+   "fieldtype": "Check",
+   "label": "Header Has Media"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-01-16 12:09:14.455727",
+ "modified_by": "Administrator",
+ "module": "WhatsApp",
+ "name": "WhatsApp Message Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1,
+   "role": "Meta User",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Meta Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "template_name"
+}

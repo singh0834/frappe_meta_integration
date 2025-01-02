@@ -1,0 +1,338 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2022-06-17 14:47:49.008557",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "image_preview",
+  "preview_html_rendered",
+  "preview_html",
+  "section_break_3",
+  "status",
+  "from_no",
+  "to",
+  "message_type",
+  "column_break_3",
+  "type",
+  "message_id",
+  "message_body",
+  "media_information_section",
+  "media_id",
+  "media_hash",
+  "media_mime_type",
+  "column_break_9",
+  "media_filename",
+  "media_caption",
+  "media_file",
+  "media_uploaded",
+  "media_image",
+  "naming_series",
+  "message_template_information_section",
+  "whatsapp_message_template",
+  "template_language",
+  "parameter_count",
+  "is_welcome_message",
+  "header_has_media",
+  "media_type",
+  "header_media",
+  "parameters",
+  "references_section",
+  "reference_dt",
+  "reference_dn"
+ ],
+ "fields": [
+  {
+   "depends_on": "eval:(doc.message_type==\"Image\"&&doc.media_file)",
+   "fieldname": "image_preview",
+   "fieldtype": "Image",
+   "label": "Image Preview",
+   "options": "media_image"
+  },
+  {
+   "depends_on": "eval:doc.message_type==\"Audio\"||doc.message_type==\"Video\"",
+   "fieldname": "preview_html_rendered",
+   "fieldtype": "HTML",
+   "label": "Preview HTML Rendered"
+  },
+  {
+   "fieldname": "preview_html",
+   "fieldtype": "HTML Editor",
+   "hidden": 1,
+   "label": "Preview HTML"
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nSent\nDelivered\nRead\nReceived\nMarked As Seen",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.type===\"Incoming\"",
+   "fieldname": "from_no",
+   "fieldtype": "Data",
+   "label": "From"
+  },
+  {
+   "depends_on": "eval:doc.type===\"Outgoing\"",
+   "fieldname": "to",
+   "fieldtype": "Data",
+   "label": "To",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "fieldname": "message_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Message Type",
+   "options": "Text\nImage\nAudio\nVideo\nDocument\nTemplate",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Outgoing",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Incoming\nOutgoing",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Message ID",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "depends_on": "eval:doc.message_type===\"Text\"",
+   "fieldname": "message_body",
+   "fieldtype": "Markdown Editor",
+   "label": "Message Body",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "depends_on": "eval:(doc.message_type!=\"Text\" && doc.message_type!=\"Template\")",
+   "fieldname": "media_information_section",
+   "fieldtype": "Section Break",
+   "label": "Media Information"
+  },
+  {
+   "fieldname": "media_id",
+   "fieldtype": "Data",
+   "label": "Media ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "media_hash",
+   "fieldtype": "Data",
+   "label": "Media Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "media_mime_type",
+   "fieldtype": "Data",
+   "label": "Media MIME Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:(doc.message_type == 'Document')",
+   "fieldname": "media_filename",
+   "fieldtype": "Data",
+   "label": "Media Filename",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "depends_on": "eval:(doc.message_type == 'Document' || doc.message_type == 'Image')",
+   "fieldname": "media_caption",
+   "fieldtype": "Data",
+   "label": "Media Caption",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "depends_on": "eval:!(doc.type==\"Outgoing\"&&doc.message_type==\"Image\")",
+   "fieldname": "media_file",
+   "fieldtype": "Attach",
+   "label": "Media File"
+  },
+  {
+   "depends_on": "eval: (doc.message_type==\"Image\")",
+   "fieldname": "media_image",
+   "fieldtype": "Attach Image",
+   "label": "Media Image",
+   "read_only_depends_on": "media_uploaded"
+  },
+  {
+   "default": "WA-MSG-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "WA-MSG-.YYYY.-",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "whatsapp_message_template",
+   "fieldtype": "Link",
+   "label": "WhatsApp Message Template",
+   "options": "WhatsApp Message MSG91",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "depends_on": "eval:doc.message_type==\"Template\"",
+   "fieldname": "message_template_information_section",
+   "fieldtype": "Section Break",
+   "label": "Message Template Information"
+  },
+  {
+   "fetch_from": "whatsapp_message_template.language_code",
+   "fieldname": "template_language",
+   "fieldtype": "Data",
+   "label": "Template Language",
+   "read_only": 1
+  },
+  {
+   "fieldname": "parameters",
+   "fieldtype": "Table",
+   "label": "Parameters",
+   "options": "WhatsApp Message Template Item",
+   "read_only_depends_on": "message_id"
+  },
+  {
+   "fieldname": "parameter_count",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Parameter Count",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_welcome_message",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Welcome Message",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "reference_dt",
+   "fieldtype": "Link",
+   "label": "Reference Dt",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "depends_on": "reference_dt",
+   "fieldname": "reference_dn",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Dn",
+   "options": "reference_dt",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "whatsapp_message_template.header_has_media",
+   "fieldname": "header_has_media",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Header Has Media",
+   "read_only": 1
+  },
+  {
+   "depends_on": "header_has_media",
+   "fetch_from": "whatsapp_message_template.media_type",
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Media Type",
+   "options": "document\nimage\nvideo"
+  },
+  {
+   "depends_on": "header_has_media",
+   "description": "This attachment should be in the above Media Type format",
+   "fieldname": "header_media",
+   "fieldtype": "Attach",
+   "label": "Header Media Attachment"
+  },
+  {
+   "default": "0",
+   "fieldname": "media_uploaded",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Media Uploaded",
+   "read_only": 1
+  }
+ ],
+ "image_field": "media_image",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2024-12-31 15:57:32.819361",
+ "modified_by": "Administrator",
+ "module": "WhatsApp",
+ "name": "WhatsApp Communication",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Meta Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Meta User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
