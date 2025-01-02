@@ -102,6 +102,8 @@ class WhatsAppCampaign(Document):
         
             if not formatted_filters:
                 frappe.throw(_("No valid filters found after formatting"))
+                
+            existing_numbers = {r.whatsapp_number for r in self.recipients}
         
             # Get the mapping of fields for whatsapp_number and person_name
             doctype_meta = frappe.get_meta(self.select_doctype)
@@ -115,7 +117,7 @@ class WhatsAppCampaign(Document):
                 records = frappe.db.get_list(
                     "Lead",
                     filters=formatted_filters,
-                    fields=["lead_name", "mobile_no"]
+                    fields=["first_name", "mobile_no"]
                 )
                 
                 frappe.log_error("records for lead", records)
@@ -138,7 +140,9 @@ class WhatsAppCampaign(Document):
                     filters=formatted_filters,
                     fields=["customer_name", "mobile_no"]
                 )
-        
+	        
+         
+            seen_phones = set()
             recipients = []
             for record in records:
                 # For Contact doctype, check both phone and mobile_no
@@ -147,8 +151,12 @@ class WhatsAppCampaign(Document):
                     name = record.customer_name
                 # For Lead
                 elif doctype_meta.name == 'Lead':
-                    phone = record.mobile_no
+                    phone = record.primary_mobile
                     name = record.first_name
+                    
+                    frappe.log_error("phone is", phone)
+                    frappe.log_error("name is", name)
+                    
                 # For Opportunity
                 elif doctype_meta.name == 'Opportunity':
                     phone = record.contact_mobile
@@ -157,17 +165,22 @@ class WhatsAppCampaign(Document):
                 elif doctype_meta.name == 'Customer':
                     phone = record.mobile_no
                     name = record.customer_name
+                    
+                    frappe.log_error("phone is", phone)
+                    frappe.log_error("name is", name)
                 
                 if phone:
                     phone = str(phone).strip()
-                    if len(phone) >= 10:  # Minimum length check
+                    if len(phone) >= 10 and phone not in seen_phones: # Minimum length check
                         recipients.append({
                             'whatsapp_number': phone,
                             'person_name': name or 'Unknown'
                         })
                         
+                        existing_numbers.add(phone)
+                        
             if not recipients:
-                frappe.msgprint(_("No valid recipients found with the current filters"))
+                frappe.msgprint(_("No new recipients found with the current filters"))
             
             frappe.log_error("recipients for lead", recipients)
             return recipients
