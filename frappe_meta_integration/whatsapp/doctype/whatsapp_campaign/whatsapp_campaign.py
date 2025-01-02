@@ -172,6 +172,8 @@ class WhatsAppCampaign(Document):
                 if phone:
                     phone = str(phone).strip()
                     if len(phone) >= 10 and phone not in seen_phones: # Minimum length check
+                        if not phone.startswith('91'):
+                            phone = '91' + phone
                         recipients.append({
                             'whatsapp_number': phone,
                             'person_name': name or 'Unknown'
