@@ -40,6 +40,8 @@
   "parameters",
   "references_section",
   "reference_dt",
+  "campaign_name",
+  "column_break_ivnb",
   "reference_dn"
  ],
  "fields": [
@@ -282,13 +284,23 @@
    "hidden": 1,
    "label": "Media Uploaded",
    "read_only": 1
+  },
+  {
+   "fieldname": "campaign_name",
+   "fieldtype": "Data",
+   "label": "Campaign Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ivnb",
+   "fieldtype": "Column Break"
   }
  ],
  "image_field": "media_image",
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2025-01-02 14:49:10.009451",
+ "modified": "2025-01-03 00:31:17.305031",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Communication",

@@ -12,6 +12,12 @@ class WhatsAppCampaign(Document):
     def on_submit(self):
         self.validate_recipients()
         self.send_message()
+        
+    def before_save(self):
+        if self.header_has_media:
+            for row in self.parameters:
+                if row.location == "header":
+                    row.value = self.header_media
 
     @frappe.whitelist()
     def validate_recipients(self):
@@ -30,6 +36,8 @@ class WhatsAppCampaign(Document):
                 whatsapp_communication = frappe.new_doc('WhatsApp Communication')
                 whatsapp_communication.to = recipient.whatsapp_number
                 whatsapp_communication.message_type = self.message_type
+                whatsapp_communication.campaign_name = self.name
+                whatsapp_communication.campaign_reipient_name = recipient.name
                 whatsapp_communication.message_body = self.message_body
                 whatsapp_communication.media_filename = self.media_filename
                 whatsapp_communication.media_caption = self.media_caption
@@ -206,3 +214,34 @@ class WhatsAppCampaign(Document):
                 frappe.throw(_("WhatsApp number is required for all recipients"))
             if len(str(recipient.whatsapp_number).strip()) < 10:
                 frappe.throw(_("Invalid WhatsApp number for recipient: {0}").format(recipient.person_name or "Unknown"))
+                
+                
+                
+# Send Scheduled whatsapp :-
+def send_scheduled_whatsapp():
+	"""Send scheduled Whatsapp to the recipients."""
+	scheduled_whatsapp = frappe.get_all(
+		"WhatsApp Campaign",
+		filters={
+			"schedule_send": ("<=", frappe.utils.now_datetime()),
+			"whatsapp_sent": False,
+			"schedule_sending": True,
+		},
+		ignore_ifnull=True,
+		pluck="name",
+	)
+
+	for campaign_name in scheduled_whatsapp:
+		try:
+			whatsapp_campaign = frappe.get_doc("WhatsApp Campaign", campaign_name)
+            # whatsapp_campaign.whatsapp_sent = 1
+            # whatsapp_campaign.submit()
+		except Exception:
+			frappe.db.rollback()
+
+			# wasn't able to send whatsapp :(
+			frappe.db.set_value("WhatsApp Campaign", campaign_name, "whatsapp_sent", 0)
+			whatsapp_campaign.log_error("Failed to send whatsapp")
+
+		if not frappe.flags.in_test:
+			frappe.db.commit()

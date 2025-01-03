@@ -90,6 +90,23 @@ class WhatsAppCommunication(Document):
 				if not self.header_media:
 					frappe.throw("`header_media` is required in selected Template.")
 
+	# Return number start with 91 to send whatsapp template correctly.
+	def validate_and_normalize_number(self, number):
+		cleaned_number = re.sub(r'\D', '', number)
+
+		if len(cleaned_number) == 10 and cleaned_number[0] in '6789':
+			return '91' + cleaned_number
+		
+		elif len(cleaned_number) == 11 and cleaned_number[0] == '0' and cleaned_number[1] in '6789':
+			return '91' + cleaned_number[1:]
+		
+		elif len(cleaned_number) == 12 and cleaned_number.startswith('91') and cleaned_number[2] in '6789':
+			return cleaned_number
+		
+		elif len(cleaned_number) == 13 and cleaned_number.startswith('+91') and cleaned_number[3] in '6789':
+			return cleaned_number[1:]  
+
+		return None
 	
 	# Method to use whatsapp msg**
 
@@ -103,8 +120,6 @@ class WhatsAppCommunication(Document):
 		api_base_url = frappe.db.get_single_value("WhatsApp Cloud API Settings", "url")
 		endpoint = frappe.db.get_single_value("WhatsApp Cloud API Settings", "endpoint")
 		phone_number_id = frappe.db.get_single_value("WhatsApp Cloud API Settings", "phone_number_id")
-		# Forget about endpoint we will procced it through the method defined in msg91
-		# endpoint = f"{api_base_url}/{phone_number_id}/messages"
 
 		response_data = {
 			"integrated_number": phone_number_id,  # Replace with your WhatsApp number
@@ -112,7 +127,7 @@ class WhatsAppCommunication(Document):
 			"payload": {
 				"type": "template",
 				"template": {
-					"name": self.whatsapp_message_template,  # Template name from Wati
+					"name": self.whatsapp_message_template,  # Template name from Whatsapp
 					"language": {
 						"code": self.template_language,  # Language code
 						"policy": "deterministic"
@@ -194,9 +209,9 @@ class WhatsAppCommunication(Document):
 					**body_components,
 					**button_components
 				}
-			
+			validated_number = validate_and_normalize_number(self.to)
 			new_components = {
-				"to":[self.to],
+				"to":[validated_number],
 				"components": components_dict
 			}
 			response_data["payload"]["template"]["to_and_components"].append(new_components)
@@ -256,7 +271,7 @@ class WhatsAppCommunication(Document):
 			"parameters": template_items,
 			"message_body" : message
 		})
-		wa_msg.insert(ignore_permissions = 1)
+		wa_msg.save(ignore_permissions = 1)
 		# wa_msg = frappe.get_doc('WhatsApp Communication')
 		# wa_msg.to = to
 		# wa_msg.reference_dt = doctype

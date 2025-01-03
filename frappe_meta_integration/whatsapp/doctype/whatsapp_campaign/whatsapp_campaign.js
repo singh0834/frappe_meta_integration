@@ -13,6 +13,65 @@ frappe.ui.form.on('WhatsApp Campaign', {
     //     }
     // });
   },
+  refresh:function(frm){
+    frm.add_custom_button(
+      __("Schedule sending"),
+      () => {
+        frm.events.schedule_send_dialog(frm);
+      },
+      __("Send")
+    );
+  },
+  schedule_send_dialog(frm) {
+		let hours = frappe.utils.range(24);
+		let time_slots = hours.map((hour) => {
+			return `${(hour + "").padStart(2, "0")}:00`;
+		});
+		let d = new frappe.ui.Dialog({
+			title: __("Schedule WhatsApp"),
+			fields: [
+				{
+					label: __("Date"),
+					fieldname: "date",
+					fieldtype: "Date",
+					options: {
+						minDate: new Date(),
+					},
+					reqd: true,
+				},
+				{
+					label: __("Time"),
+					fieldname: "time",
+					fieldtype: "Select",
+					options: time_slots,
+					reqd: true,
+				},
+			],
+			primary_action_label: __("Schedule"),
+			primary_action({ date, time }) {
+				frm.set_value("schedule_sending", 1);
+				frm.set_value("schedule_send", `${date} ${time}:00`);
+				d.hide();
+				frm.save();
+			},
+			secondary_action_label: __("Cancel Scheduling"),
+			secondary_action() {
+				frm.set_value("schedule_sending", 0);
+				frm.set_value("schedule_send", "");
+				d.hide();
+				frm.save();
+			},
+		});
+		if (frm.doc.schedule_sending) {
+			let parts = frm.doc.schedule_send.split(" ");
+			if (parts.length === 2) {
+				let [date, time] = parts;
+				d.set_value("date", date);
+				d.set_value("time", time.slice(0, 5));
+			}
+		}
+		d.show();
+	},
   whatsapp_message_template: function(frm){
     set_template_parameters(frm);
   }

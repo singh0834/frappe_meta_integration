@@ -11,6 +11,8 @@
   "naming_series",
   "campaign_name",
   "campaign_date",
+  "schedule_send",
+  "schedule_sending",
   "message_type",
   "column_break_dzbea",
   "message_body",
@@ -22,6 +24,9 @@
   "media_image",
   "message_template_information_section",
   "whatsapp_message_template",
+  "header_has_media",
+  "media_type",
+  "header_media",
   "parameter_count",
   "parameters",
   "recipients_section",
@@ -44,7 +49,7 @@
    "fieldname": "message_type",
    "fieldtype": "Select",
    "label": "message_type",
-   "options": "Text\nImage\nAudio\nVideo\nDocument\nTemplate"
+   "options": "\nTemplate"
   },
   {
    "fieldname": "whatsapp_message_template",
@@ -144,12 +149,44 @@
    "fieldtype": "Link",
    "label": "Select Doctype",
    "options": "DocType"
+  },
+  {
+   "default": "0",
+   "fieldname": "schedule_sending",
+   "fieldtype": "Check",
+   "label": "schedule_sending"
+  },
+  {
+   "fieldname": "schedule_send",
+   "fieldtype": "Datetime",
+   "label": "Send WhatsApp At"
+  },
+  {
+   "default": "0",
+   "fetch_from": "whatsapp_message_template.header_has_media",
+   "fetch_if_empty": 1,
+   "fieldname": "header_has_media",
+   "fieldtype": "Check",
+   "label": "header_has_media"
+  },
+  {
+   "fieldname": "header_media",
+   "fieldtype": "Attach",
+   "label": "header_media"
+  },
+  {
+   "fetch_from": "whatsapp_message_template.media_type",
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "media_type",
+   "options": "document\nimage\nvideo",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-02 18:49:42.637892",
+ "modified": "2025-01-03 08:22:58.586309",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",
