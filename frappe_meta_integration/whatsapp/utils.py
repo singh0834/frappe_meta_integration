@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 import requests
+import urllib
+from urllib.parse import urlsplit
 import json
 import string
 from frappe_meta_integration.whatsapp.doctype.whatsapp_communication.whatsapp_communication import WhatsAppCommunication
@@ -130,6 +132,7 @@ def send_whatsapp_msg(doctype, docname, args, template_parameter):
     #     )
 
 	# Calling Method from whatsApp Communication model to send the template
+	# template_parameter = str(template_parameter)
 	WhatsAppCommunication.send_whatsapp_message(
 		receiver_list = receiver_list,
 		message = message,
@@ -138,5 +141,5 @@ def send_whatsapp_msg(doctype, docname, args, template_parameter):
 		docname = docname,
 		template_parameter = template_parameter,
 		media = pdf_link,
-		file_name = file_name,
+		file_name = file_name
 	)

@@ -13,7 +13,7 @@ $(document).ready(function () {
             frappe.ui.form.on(this.frm.doctype, {
                 refresh: (frm) => {
                     if (!ignored_doctype_list.includes(frm.doc.doctype)) {
-                        frm.page.add_menu_item(__('Send via WhatsApp1'), () => send_sms(frm));
+                        frm.page.add_menu_item(__('Send via WhatsApp'), () => send_sms(frm));
                     }
                 }
             });
@@ -21,16 +21,16 @@ $(document).ready(function () {
     });
 });
 
-frappe.views.WhatsAppComposer = class {
-    constructor(opts) {
-        $.extend(this, opts);
-        this.doc = this.frm && this.frm.doc || {};
-        this.make();
-    }
-    make() {
-        send_sms(cur_frm);
-    }
-};
+// frappe.views.WhatsAppComposer = class {
+//     constructor(opts) {
+//         $.extend(this, opts);
+//         this.doc = this.frm && this.frm.doc || {};
+//         this.make();
+//     }
+//     make() {
+//         send_sms(cur_frm);
+//     }
+// };
 
 function send_sms(frm) {
     if (frm.is_dirty()) {

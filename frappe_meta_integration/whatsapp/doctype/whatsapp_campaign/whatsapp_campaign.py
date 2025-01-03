@@ -3,6 +3,7 @@
 
 import frappe
 from frappe import _
+import urllib
 from frappe_meta_integration.whatsapp.doctype.whatsapp_communication.whatsapp_communication import WhatsAppCommunication
 from frappe.model.document import Document
 
@@ -18,7 +19,7 @@ class WhatsAppCampaign(Document):
         if self.header_has_media:
             for row in self.parameters:
                 if row.location == "header":
-                    row.value = self.header_media
+                    row.value = f"{frappe.utils.get_url()}{urllib.parse.quote(self.header_media)}"
 
     @frappe.whitelist()
     def validate_recipients(self):
@@ -28,7 +29,21 @@ class WhatsAppCampaign(Document):
                     frappe.throw("Recipient is required in Row {} to send messages".format(recipient.idx))
         else:
             frappe.throw("Recipient is required to send messages")
-
+            
+            
+    def check_parameter(self, number):
+        temp_param = []
+        for row in self.parameters:
+            if row.get("value") == 'whatsapp_parameter':
+                row["value"] = self.recepient_data(number)
+                temp_param.append(row)
+            else:
+                temp_param.append(row)
+        frappe.log_error("parame", parameters)
+        frappe.log_error("temp_param", temp_param)
+        frappe.throw("Reached")
+        return self.parameters
+    
     @frappe.whitelist()
     def send_message(self):
         if self.recipients:
@@ -38,6 +53,7 @@ class WhatsAppCampaign(Document):
                 validated_number = WhatsAppCommunication.validate_and_normalize_number(self, recipient.whatsapp_number)
                 whatsapp_communication.to = validated_number
                 whatsapp_communication.message_type = self.message_type
+                whatsapp_communication.header_media = f"{frappe.utils.get_url()}{urllib.parse.quote(self.header_media)}"
                 whatsapp_communication.campaign_name = self.name
                 whatsapp_communication.campaign_reipient_name = recipient.name
                 whatsapp_communication.message_body = self.message_body
@@ -50,7 +66,7 @@ class WhatsAppCampaign(Document):
                 whatsapp_communication.reference_dt = self.doctype
                 whatsapp_communication.reference_dn = self.name
                 whatsapp_communication.save(ignore_permissions=True)
-                whatsapp_communication.send_message()
+                # whatsapp_communication.send_message()
                 frappe.db.set_value('WhatsApp Campaign Recipient', recipient.name, 'whatsapp_communication', whatsapp_communication.name)
                 frappe.db.set_value('WhatsApp Campaign Recipient', recipient.name, 'status', whatsapp_communication.status)
                 created = 1

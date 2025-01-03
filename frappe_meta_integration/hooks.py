@@ -33,7 +33,7 @@ app_include_js = "/assets/frappe_meta_integration/js/test_wa.js"
 # include js in doctype views
 doctype_js = {
 	"Notification" : "whatsapp/public/js/notification.js",
-	"User" : "whatsapp/public/js/user.js"
+	# "User" : "whatsapp/public/js/user.js"
 	}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}

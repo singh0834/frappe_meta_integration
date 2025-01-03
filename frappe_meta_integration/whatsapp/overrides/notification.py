@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+import urllib
 from frappe.email.doctype.notification.notification import Notification, get_context, json
 from frappe_meta_integration.whatsapp.doctype.whatsapp_communication.whatsapp_communication import WhatsAppCommunication
 from frappe.utils.print_format import download_pdf
@@ -34,6 +35,7 @@ class SendNotification(Notification):
 		whatsapp_template = frappe.get_doc("WhatsApp Message MSG91", whatsapp_template)
 		template_parameters = frappe.render_template(self.message, context)
 		params = json.loads(template_parameters)
+		frappe.log_error("hi", [params, whatsapp_template])
   
 		"""
 		Generate mediaif exists and send message
@@ -52,14 +54,16 @@ class SendNotification(Notification):
 		# 	file_ref = save_and_attach(pdf_data, doctype, docname, title_folder)
 		# 	pdf_link = file_ref.file_url
 		# 	file_name = file_ref.file_name
-
+		if whatsapp_template.get("header_has_media"):
+			params["header_1"] = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
 		WhatsAppCommunication.send_whatsapp_message(
 			receiver_list=self.get_receiver_list(doc, context),
 			message=frappe.render_template(self.message, context),
-			template = whatsapp_template,
+			template = whatsapp_template.name,
 			doctype = self.doctype,
 			docname = self.name,
 			template_parameter = params,
 			media = pdf_link,
-			file_name = file_name
+			file_name = file_name,
+			header_media = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}' if whatsapp_template.get("header_has_media") else None
 		)

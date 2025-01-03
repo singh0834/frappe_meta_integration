@@ -158,7 +158,7 @@ class WhatsAppCommunication(Document):
 		# Designed the payload reuired while sending the message template.
 		if self.message_type == "Template":
 			self.validate_parameters()
-			# self.validate_header_media()
+			self.validate_header_media()
 			# Body Parameter
 			body_parameters = []
 			body_components = {}
@@ -187,7 +187,7 @@ class WhatsAppCommunication(Document):
 				elif param.location == 'header':
 					headers_parameters.append({
 						"type": param.type,
-						"value": param.value if param.type == "text" else f"{frappe.get_url()}+{param.value}"
+						"value": param.value
       				})
 			for i, param in enumerate(body_parameters, 1):
 				body_components[f"body_{i}"] = param
@@ -209,9 +209,8 @@ class WhatsAppCommunication(Document):
 					**body_components,
 					**button_components
 				}
-			validated_number = validate_and_normalize_number(self.to)
 			new_components = {
-				"to":[validated_number],
+				"to":[self.to],
 				"components": components_dict
 			}
 			response_data["payload"]["template"]["to_and_components"].append(new_components)
@@ -241,7 +240,7 @@ class WhatsAppCommunication(Document):
 			frappe.throw(response.json().get("error").get("message"))
 
 	@classmethod
-	def send_whatsapp_message(self, receiver_list, message, template, doctype, docname, template_parameter = None, media=None, file_name=None):
+	def send_whatsapp_message(self, receiver_list, message, template, doctype, docname, template_parameter = None, media=None, file_name=None, header_media = None):
 		if isinstance(receiver_list, string_types):
 			if not isinstance(receiver_list, list):
 				receiver_list = [receiver_list]
@@ -250,17 +249,17 @@ class WhatsAppCommunication(Document):
 			"""
 			Iterate receiver_list and send message to each recepient
 			"""
-			self.create_whatsapp_message(rec, message, template, doctype, docname, template_parameter) #For Text Message or Caption for documents
+			self.create_whatsapp_message(self.validate_and_normalize_number(self, rec), message, template, doctype, docname, template_parameter, media, file_name, header_media) #For Text Message or Caption for documents
 			if media and file_name:
-				self.create_whatsapp_message(rec, message, template, doctype, docname, template_parameter, media, file_name) #For Document
+				self.create_whatsapp_message(self.validate_and_normalize_number(self, rec), message, template, doctype, docname, template_parameter, media, file_name, header_media) #For Document
 
 
-	def create_whatsapp_message(to, message, template=None, doctype=None, docname=None, template_parameter = None, media=None, file_name=None):
+	def create_whatsapp_message(to, message, template=None, doctype=None, docname=None, template_parameter = None, media=None, file_name=None, header_media = None):
 		"""
 		Create WhatsApp Communication with given data.
 		"""
 		template_items = process_template_parameter(template, template_parameter)
-		frappe.log_error("log", template_items)
+		frappe.log_error("log", header_media)
 		wa_msg = frappe.get_doc({
 			"doctype": "WhatsApp Communication",
 			"to": to,
@@ -269,7 +268,8 @@ class WhatsAppCommunication(Document):
 			"reference_dn": docname,
 			"message_type": "Template",
 			"parameters": template_items,
-			"message_body" : message
+			"message_body" : message,
+			"header_media": header_media
 		})
 		wa_msg.save(ignore_permissions = 1)
 		# wa_msg = frappe.get_doc('WhatsApp Communication')
