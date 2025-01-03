@@ -142,7 +142,8 @@ class WhatsAppCampaign(Document):
                 )
 	        
          
-            seen_phones = set()
+            seen_phones = set(existing_numbers)
+            frappe.log_error("seen_phones", seen_phones)
             recipients = []
             for record in records:
                 # For Contact doctype, check both phone and mobile_no
@@ -179,7 +180,8 @@ class WhatsAppCampaign(Document):
                             'person_name': name or 'Unknown'
                         })
                         
-                        existing_numbers.add(phone)
+                        seen_phones.add(phone)
+                        frappe.log_error("seen_phones", seen_phones)
                         
             if not recipients:
                 frappe.msgprint(_("No new recipients found with the current filters"))
