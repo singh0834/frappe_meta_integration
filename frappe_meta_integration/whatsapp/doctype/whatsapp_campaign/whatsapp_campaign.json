@@ -12,8 +12,12 @@
   "campaign_name",
   "campaign_date",
   "message_type",
+  "parameter_data",
   "column_break_dzbea",
   "message_body",
+  "select_doctype",
+  "saved_filters",
+  "recipient_data",
   "media_information_section",
   "media_filename",
   "media_caption",
@@ -137,12 +141,35 @@
   {
    "fieldname": "column_break_dzbea",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "select_doctype",
+   "fieldtype": "Link",
+   "label": "Select Doctype",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "saved_filters",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "label": "Saved Filters"
+  },
+  {
+   "fieldname": "recipient_data",
+   "fieldtype": "Code",
+   "hidden": 1,
+   "label": "Recipient Data"
+  },
+  {
+   "fieldname": "parameter_data",
+   "fieldtype": "Select",
+   "label": "Parameter Data"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-02 10:04:17.032299",
+ "modified": "2025-01-03 14:39:04.699182",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",

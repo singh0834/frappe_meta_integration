@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+import json
 
 class WhatsAppCampaign(Document):
     def validate(self):
@@ -85,43 +86,40 @@ class WhatsAppCampaign(Document):
         except Exception as e:
             frappe.log_error(f"Filter formatting error: {str(e)}", "WhatsApp Campaign Filter Error")
             return []
-
+    
+    
     @frappe.whitelist()
     def apply_filters_and_get_recipients(self, filters):
         """Apply filters and populate recipients table"""
         if not self.select_doctype:
-            frappe.throw(_("Please select a DocType first"))
-    
+            frappe.throw(("Please select a DocType first"))
+
         try:
             if not filters:
-                frappe.throw(_("No filters provided"))
-            
+                frappe.throw(("No filters provided"))
+
             # Format the filters
             formatted_filters = self.format_filters(filters)
             frappe.log_error("formatted_filters", formatted_filters)
-        
+
             if not formatted_filters:
-                frappe.throw(_("No valid filters found after formatting"))
-                
-            existing_numbers = {r.whatsapp_number for r in self.recipients}
-        
+                frappe.throw(("No valid filters found after formatting"))
+
+            # Initialize an empty set for tracking unique phone numbers
+            seen_phones = set()
+
             # Get the mapping of fields for whatsapp_number and person_name
             doctype_meta = frappe.get_meta(self.select_doctype)
-            frappe.log_error("doctype_meta", doctype_meta)
-            frappe.log_error("doctype_meta.name", doctype_meta.name)
-        
+
             # Get records based on doctype
             records = []
             if doctype_meta.name.strip() == 'Lead':
-                frappe.log_error("i am here")
                 records = frappe.db.get_list(
                     "Lead",
                     filters=formatted_filters,
                     fields=["first_name", "mobile_no"]
                 )
-                
-                frappe.log_error("records for lead", records)
-                
+
             elif doctype_meta.name == 'Opportunity':
                 records = frappe.db.get_list(
                     "Opportunity",
@@ -140,73 +138,61 @@ class WhatsAppCampaign(Document):
                     filters=formatted_filters,
                     fields=["customer_name", "mobile_no"]
                 )
-	        
-         
-            seen_phones = set(existing_numbers)
-            frappe.log_error("seen_phones", seen_phones)
-            recipients = []
+
+            recipients = [] 
+            recipient_data = {}
             for record in records:
-                # For Contact doctype, check both phone and mobile_no
+                # Get phone and name based on doctype
                 if doctype_meta.name == 'Contact':
                     phone = record.mobile_no or record.phone
                     name = record.customer_name
-                # For Lead
                 elif doctype_meta.name == 'Lead':
                     phone = record.mobile_no
                     name = record.first_name
-                    
-                    frappe.log_error("phone is", phone)
-                    frappe.log_error("name is", name)
-                    
-                # For Opportunity
                 elif doctype_meta.name == 'Opportunity':
                     phone = record.contact_mobile
                     name = record.customer_name
-                # For Customer
                 elif doctype_meta.name == 'Customer':
                     phone = record.mobile_no
                     name = record.customer_name
-                    
-                    frappe.log_error("phone is", phone)
-                    frappe.log_error("name is", name)
-                
+
                 if phone:
                     phone = str(phone).strip()
-                    if len(phone) >= 10 and phone not in seen_phones: # Minimum length check
-                        if not phone.startswith('91'):
-                            phone = '91' + phone
+                    # Add '91' prefix if not present
+                    if len(phone) >= 10 and not phone.startswith('91'):
+                        phone = '91' + phone
+
+                    # Check if phone number is unique in current batch
+                    if phone not in seen_phones and len(phone) >= 12:  # 12 digits (91 + 10 digit number)
                         recipients.append({
                             'whatsapp_number': phone,
                             'person_name': name or 'Unknown'
                         })
-                        
+                        recipient_data[phone] = name or 'Unknown'
                         seen_phones.add(phone)
-                        frappe.log_error("seen_phones", seen_phones)
-                        
+                        frappe.log_error(f"Added new phone: {phone}", seen_phones)
+
             if not recipients:
-                frappe.msgprint(_("No new recipients found with the current filters"))
+                frappe.msgprint(("No new recipients found with the current filters"))
+            self.recipient_data = json.dumps(recipient_data)
             
-            frappe.log_error("recipients for lead", recipients)
+            frappe.log_error("Final recipients list", recipients)
             return recipients
 
         except Exception as e:
-            frappe.log_error(
-                msg=f"Error applying filters for {self.select_doctype}: {str(e)}\nFilters: {filters}",
-                title="WhatsApp Campaign Filter Error"
-            )
-            frappe.throw(_("Error applying filters: {0}").format(str(e)))
-
+            frappe.throw(("Error applying filters: {0}").format(str(e)))
+        
     def validate_campaign_settings(self):
         """Validate the campaign settings"""
         if not self.select_doctype:
-            frappe.throw(_("Please select a DocType for filtering recipients"))
+            frappe.throw(("Please select a DocType for filtering recipients"))
             
         if not self.recipients:
-            frappe.throw(_("Recipients table cannot be empty. Please apply filters to populate recipients."))
+            frappe.throw(("Recipients table cannot be empty. Please apply filters to populate recipients."))
             
         # Validate recipient phone numbers
         for recipient in self.recipients:
             if not recipient.whatsapp_number:
-                frappe.throw(_("WhatsApp number is required for all recipients"))
+                frappe.throw(("WhatsApp number is required for all recipients"))
             if len(str(recipient.whatsapp_number).strip()) < 10:
-                frappe.throw(_("Invalid WhatsApp number for recipient: {0}").format(recipient.person_name or "Unknown"))
+                frappe.throw(("Invalid WhatsApp number for recipient: {0}").format(recipient.person_name or "Unknown"))

@@ -2,73 +2,73 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('WhatsApp Campaign', {
-  setup: function(frm){
-    frm.get_field("parameters").grid.cannot_add_rows = true;
-    frm.refresh_field("parameters");
-    // frm.set_query('whatsapp_message_template', () => {
-    //     return {
-    //         filters: {
-    //             docstatus: 1
-    //         }
-    //     }
-    // });
-  },
-  whatsapp_message_template: function(frm){
-    set_template_parameters(frm);
-  }
+    setup: function (frm) {
+        frm.get_field("parameters").grid.cannot_add_rows = true;
+        frm.refresh_field("parameters");
+        // frm.set_query('whatsapp_message_template', () => {
+        //     return {
+        //         filters: {
+        //             docstatus: 1
+        //         }
+        //     }
+        // });
+    },
+    whatsapp_message_template: function (frm) {
+        set_template_parameters(frm);
+    }
 });
 
 frappe.ui.form.on('WhatsApp Message Template Item', {
-  parameters_remove: function(frm, cdt, cdn){
-    frappe.show_alert({
-      message:__('You are not allowed to add/remove parameter Manually!. Changes will be reverted.'),
-      indicator:'red'
-    }, 5);
-    set_template_parameters(frm);
-  },
-  parameters_add: function(frm, cdt, cdn){
-    frappe.show_alert({
-      message:__('You are not allowed to add/remove parameter Manually!. Changes will be reverted.'),
-      indicator:'red'
-    }, 5);
-    set_template_parameters(frm);
-  }
+    parameters_remove: function (frm, cdt, cdn) {
+        frappe.show_alert({
+            message: __('You are not allowed to add/remove parameter Manually!. Changes will be reverted.'),
+            indicator: 'red'
+        }, 5);
+        set_template_parameters(frm);
+    },
+    parameters_add: function (frm, cdt, cdn) {
+        frappe.show_alert({
+            message: __('You are not allowed to add/remove parameter Manually!. Changes will be reverted.'),
+            indicator: 'red'
+        }, 5);
+        set_template_parameters(frm);
+    }
 });
 
-function set_template_parameters(frm){
-  if(frm.doc.whatsapp_message_template){
-    frappe.call({
-      method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_message_template.whatsapp_message_template.set_template_parameters',
-      args: {
-        "whatsapp_message_template": frm.doc.whatsapp_message_template
-      },
-      callback: function(r) {
-        console.log(r)
-        frm.clear_table('parameters');
-        for(var i=0; i< r.message.length; i++){
-          let row =frm.add_child('parameters',{
-            parameter: r.message[i].field_name,
-            location: r.message[i].location,
-            type: r.message[i].type,
-            subtype: r.message[i].subtype,
-          });
-        }
-        frm.save()
-      }
-    });
-  }
+function set_template_parameters(frm) {
+    if (frm.doc.whatsapp_message_template) {
+        frappe.call({
+            method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_message_template.whatsapp_message_template.set_template_parameters',
+            args: {
+                "whatsapp_message_template": frm.doc.whatsapp_message_template
+            },
+            callback: function (r) {
+                console.log(r)
+                frm.clear_table('parameters');
+                for (var i = 0; i < r.message.length; i++) {
+                    let row = frm.add_child('parameters', {
+                        parameter: r.message[i].field_name,
+                        location: r.message[i].location,
+                        type: r.message[i].type,
+                        subtype: r.message[i].subtype,
+                    });
+                }
+                frm.save()
+            }
+        });
+    }
 }
 
 //updated code - sukhman
+
 frappe.ui.form.on('WhatsApp Campaign', {
-  refresh: function(frm) {
-      frm.trigger('setup_filters');
-      
-      // Add styles
-      if (!document.getElementById('whatsapp-campaign-styles')) {
-          const styleSheet = document.createElement('style');
-          styleSheet.id = 'whatsapp-campaign-styles';
-          styleSheet.textContent = `
+    refresh: function (frm) {
+        frm.trigger('setup_filters');
+        // Add styles
+        if (!document.getElementById('whatsapp-campaign-styles')) {
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'whatsapp-campaign-styles';
+            styleSheet.textContent = `
               .filter-section {
                   margin: 15px 0;
                   padding: 15px;
@@ -111,80 +111,182 @@ frappe.ui.form.on('WhatsApp Campaign', {
                   font-style: italic;
               }
           `;
-          document.head.appendChild(styleSheet);
-      }
-  },
+            document.head.appendChild(styleSheet);
+        }
+    },
 
-  setup_filters: function(frm) {
-      if (!frm.filter_wrapper) {
-          frm.filter_wrapper = $('<div class="filter-section">');
-          let recipients_field = frm.get_field('recipients');
-          if (recipients_field && recipients_field.wrapper) {
-              frm.filter_wrapper.insertBefore(recipients_field.wrapper);
-          }
-      }
-      
-      if (frm.doc.select_doctype) {
-          frm.trigger('select_doctype');
-      }
-  },
+    
+    setup_filters: function (frm) {
+        if (!frm.filter_wrapper) {
+            frm.filter_wrapper = $('<div class="filter-section">');
+            let recipients_field = frm.get_field('recipients');
+            if (recipients_field && recipients_field.wrapper) {
+                frm.filter_wrapper.insertBefore(recipients_field.wrapper);
+            }
+        }
 
-  select_doctype: function(frm) {
-      if (!frm.doc.select_doctype) return;
+        if (frm.doc.select_doctype) {
+            frm.trigger('select_doctype');
+        }
+    },
 
-      frm.filter_wrapper.empty();
+    before_save: function (frm) {
+        // Ensure current filters are saved before form submission
+        if (frm.filter_group) {
+            const currentFilters = frm.filter_group.get_filters();
+            frm.doc.saved_filters = JSON.stringify(currentFilters);
+        }
+    },
 
-      frappe.model.with_doctype(frm.doc.select_doctype, () => {
-          let filter_area = $('<div class="filter-area">').appendTo(frm.filter_wrapper);
-          
-          frm.filter_group = new frappe.ui.FilterGroup({
-              parent: filter_area,
-              doctype: frm.doc.select_doctype,
-              on_change: function() {
-                  frm.filter_list = this.get_filters();
-              }
-          });
+    after_save: function (frm) {
+        // Reapply filters after save
+        frm.trigger('setup_filters');
+    },
 
-          let filter_toolbar = $('<div class="filter-toolbar">').appendTo(frm.filter_wrapper);
-          let loading_message = $('<div class="loading-message">').hide().appendTo(frm.filter_wrapper);
-          
-          let buttons = $(`
+    select_doctype: function (frm) {
+        if (!frm.doc.select_doctype) return;
+
+        frm.filter_wrapper.empty();
+
+        frappe.model.with_doctype(frm.doc.select_doctype, () => {
+            let filter_area = $('<div class="filter-area">').appendTo(frm.filter_wrapper);
+
+            // Initialize filter group
+            frm.filter_group = new frappe.ui.FilterGroup({
+                parent: filter_area,
+                doctype: frm.doc.select_doctype,
+                on_change: function () {
+                    // Save filters immediately when they change
+                    const currentFilters = this.get_filters();
+                    frm.doc.saved_filters = JSON.stringify(currentFilters);
+                    frm.dirty();
+                    frm.save_disabled = false;
+                    frm.page.clear_primary_action();
+                }
+            });
+
+            let filter_toolbar = $('<div class="filter-toolbar">').appendTo(frm.filter_wrapper);
+            let loading_message = $('<div class="loading-message">').hide().appendTo(frm.filter_wrapper);
+
+            let buttons = $(`
               <div class="filter-buttons">
                   <button class="btn btn-xs btn-primary apply-filters">Apply</button>
               </div>
           `).appendTo(filter_toolbar);
 
-          buttons.find('.apply-filters').on('click', () => {
-              if (!frm.filter_list?.length) {
-                  frappe.msgprint('Please set at least one filter');
-                  return;
-              }
+            // Restore saved filters
+            try {
+                if (frm.doc.saved_filters) {
+                    const savedFilters = JSON.parse(frm.doc.saved_filters);
+                    if (Array.isArray(savedFilters) && savedFilters.length > 0) {
+                        savedFilters.forEach(filter => {
+                            if (filter && Array.isArray(filter) && filter.length >= 4) {
+                                frm.filter_group.add_filter(
+                                    frm.doc.select_doctype,
+                                    filter[1],
+                                    filter[2],
+                                    filter[3]
+                                );
+                            }
+                        });
+                    } else {
+                        frm.filter_group.add_filter(frm.doc.select_doctype, '', '=', '');
+                    }
+                } else {
+                    frm.filter_group.add_filter(frm.doc.select_doctype, '', '=', '');
+                }
+            } catch (e) {
+                console.error('Error restoring filters:', e);
+                frm.filter_group.add_filter(frm.doc.select_doctype, '', '=', '');
+            }
 
-              loading_message.html('Finding recipients...').show();
+            buttons.find('.apply-filters').on('click', () => {
+                const currentFilters = frm.filter_group.get_filters();
+                if (!currentFilters?.length) {
+                    frappe.msgprint('Please set at least one filter');
+                    return;
+                }
 
-              frappe.call({
-                  method: 'apply_filters_and_get_recipients',
-                  doc: frm.doc,
-                  args: { filters: frm.filter_list },
-                  freeze: true,
-                  freeze_message: 'Finding recipients...',
-                  callback: function(r) {
-                      loading_message.hide();
-                      if (!r.message) return;
-                      
-                      frm.clear_table('recipients');
-                      r.message.forEach(recipient => {
-                          let row = frm.add_child('recipients');
-                          row.whatsapp_number = recipient.whatsapp_number;
-                          row.person_name = recipient.person_name;
-                      });
-                      frm.refresh_field('recipients');
-                      frappe.show_alert('Recipients updated', 5);
-                  }
-              });
-          });
+                // Save current filters before applying
+                frm.doc.saved_filters = JSON.stringify(currentFilters);
 
-          frm.filter_group.add_filter(frm.doc.select_doctype, '', '=', '');
-      });
-  }
+                loading_message.html('Finding recipients...').show();
+
+                frappe.call({
+                    method: 'apply_filters_and_get_recipients',
+                    doc: frm.doc,
+                    args: { filters: currentFilters },
+                    freeze: true,
+                    freeze_message: 'Finding recipients...',
+                    callback: function (r) {
+                        loading_message.hide();
+                        if (!r.message) return;
+
+                        frm.clear_table('recipients');
+                        r.message.forEach(recipient => {
+                            let row = frm.add_child('recipients');
+                            row.whatsapp_number = recipient.whatsapp_number;
+                            row.person_name = recipient.person_name;
+                        });
+                        frm.refresh_field('recipients');
+                        frappe.show_alert('Recipients updated', 5);
+                    }
+                });
+            });
+        });
+    }
+});
+
+
+frappe.ui.form.on('WhatsApp Campaign', {
+    refresh: function (frm) {
+        // Trigger the function to set parameter_data options when whatsapp_message_template is already set
+        if (frm.doc.whatsapp_message_template) {
+            frm.trigger('fetch_parameters');
+        }
+    },
+
+    whatsapp_message_template: function (frm) {
+        // Trigger the fetch_parameters function when whatsapp_message_template is selected
+        frm.trigger('fetch_parameters');
+    },
+
+    fetch_parameters: function (frm) {
+        if (!frm.doc.whatsapp_message_template) {
+            // Clear options if no template is selected
+            frm.set_df_property('parameter_data', 'options', '');
+            return;
+        }
+
+        // Fetch the WhatsApp Message MSG91 document where the name matches whatsapp_message_template
+        frappe.db.get_doc('WhatsApp Message MSG91', cur_frm.doc.whatsapp_message_template)
+            .then((doc) => {
+                if (doc) {
+                    const parameter_table = doc.parameter || [];
+                    let field_names = [];
+
+                    // Iterate over the parameter child table to get field_name
+                    for (let row of parameter_table) {
+                        if (row.field_name) {
+                            field_names.push(row.field_name);
+                        }
+                    }
+
+                    // Update options for parameter_data field in WhatsApp Campaign
+                    if (field_names.length > 0) {
+                        frm.set_df_property('parameter_data', 'options', field_names.join('\n'));
+                    } else {
+                        frappe.msgprint(__('No parameters found in the selected WhatsApp Message Template.'));
+                        frm.set_df_property('parameter_data', 'options', '');
+                    }
+                } else {
+                    frappe.msgprint(__('WhatsApp Message Template not found.'));
+                    frm.set_df_property('parameter_data', 'options', '');
+                }
+            })
+            .catch(() => {
+                frappe.msgprint(__('Failed to fetch parameters.'));
+                frm.set_df_property('parameter_data', 'options', '');
+            });
+    }
 });
