@@ -158,7 +158,7 @@ class WhatsAppCommunication(Document):
 		# Designed the payload reuired while sending the message template.
 		if self.message_type == "Template":
 			self.validate_parameters()
-			self.validate_header_media()
+			# self.validate_header_media()
 			# Body Parameter
 			body_parameters = []
 			body_components = {}
@@ -171,7 +171,7 @@ class WhatsAppCommunication(Document):
 			headers_parameters = []
 			header_component = {}
 			components_dict = {}
-   
+			frappe.log_error("param", self.parameters)
 			for param in self.parameters:
 				if param.location == 'button' and param.subtype == 'url':
 					button_parameters.append({
@@ -187,7 +187,7 @@ class WhatsAppCommunication(Document):
 				elif param.location == 'header':
 					headers_parameters.append({
 						"type": param.type,
-						"value": param.value
+						"value": param.value if param.type == "text" else f"{frappe.get_url()}+{param.value}"
       				})
 			for i, param in enumerate(body_parameters, 1):
 				body_components[f"body_{i}"] = param

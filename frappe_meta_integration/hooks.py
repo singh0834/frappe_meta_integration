@@ -112,23 +112,23 @@ fixtures = ["Property Setter"]
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"frappe_meta_integration.tasks.all"
 # 	],
 # 	"daily": [
 # 		"frappe_meta_integration.tasks.daily"
 # 	],
-# 	"hourly": [
-# 		"frappe_meta_integration.tasks.hourly"
-# 	],
+	"hourly": [
+		"frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.send_scheduled_whatsapp"
+	],
 # 	"weekly": [
 # 		"frappe_meta_integration.tasks.weekly"
 # 	]
 # 	"monthly": [
 # 		"frappe_meta_integration.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
