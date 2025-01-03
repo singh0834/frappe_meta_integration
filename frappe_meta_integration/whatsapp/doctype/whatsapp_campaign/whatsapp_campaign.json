@@ -15,10 +15,13 @@
   "schedule_sending",
   "whatsapp_sent",
   "message_type",
+  "recipient_data",
+  "parameter_data",
   "column_break_dzbea",
   "message_body",
   "template",
   "select_doctype",
+  "saved_filters",
   "media_information_section",
   "media_filename",
   "media_caption",
@@ -196,12 +199,27 @@
    "fieldtype": "Text",
    "label": "Template",
    "read_only": 1
+  },
+  {
+   "fieldname": "recipient_data",
+   "fieldtype": "Code",
+   "label": "Recipient Data"
+  },
+  {
+   "fieldname": "parameter_data",
+   "fieldtype": "Select",
+   "label": "Parameter Data"
+  },
+  {
+   "fieldname": "saved_filters",
+   "fieldtype": "Long Text",
+   "label": "Saved Filters"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-03 12:43:19.065437",
+ "modified": "2025-01-03 16:02:54.841524",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",
