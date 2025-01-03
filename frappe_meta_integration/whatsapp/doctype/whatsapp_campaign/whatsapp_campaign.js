@@ -74,7 +74,6 @@ frappe.ui.form.on('WhatsApp Campaign', {
                   padding: 15px;
                   border: 1px solid #d1d8dd;
                   border-radius: 4px;
-                  background-color: #f7fafc;
               }
 
               .filter-area {

@@ -151,7 +151,7 @@ class WhatsAppCampaign(Document):
                     name = record.customer_name
                 # For Lead
                 elif doctype_meta.name == 'Lead':
-                    phone = record.primary_mobile
+                    phone = record.mobile_no
                     name = record.first_name
                     
                     frappe.log_error("phone is", phone)
