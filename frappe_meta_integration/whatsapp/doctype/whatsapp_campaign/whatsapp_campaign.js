@@ -14,13 +14,47 @@ frappe.ui.form.on('WhatsApp Campaign', {
     // });
   },
   refresh:function(frm){
-    frm.add_custom_button(
-      __("Schedule sending"),
-      () => {
-        frm.events.schedule_send_dialog(frm);
-      },
-      __("Send")
-    );
+    let doc = frm.doc;
+    let can_write = frappe.boot.user.can_write.includes(doc.doctype);
+    if (!frm.is_new() && !frm.is_dirty() && !doc.whatsapp_sent && can_write) {
+        frm.add_custom_button(
+            __("Send now"),
+            () => {
+                if (frm.doc.schedule_send) {
+                    frappe.confirm(
+                        __(
+                            "This campaign was scheduled to send on a later date. Are you sure you want to send it now?"
+                        ),
+                        function () {
+                            frm.events.send_whatsapp(frm);
+                        }
+                    );
+                    return;
+                }
+                frappe.confirm(
+                    __("Are you sure you want to send this campaign now?"),
+                    () => {
+                        frm.events.send_whatsapp(frm);
+                    }
+                );
+            },
+            __("Send")
+        );
+        frm.add_custom_button(
+        __("Schedule sending"),
+        () => {
+            frm.events.schedule_send_dialog(frm);
+        },
+        __("Send")
+        );
+    }
+  },
+  send_whatsapp(frm){
+    frappe.dom.freeze(__("Sending WhatsApp..."));
+    frm.call("send_whatsapp").then(() => {
+        frm.refresh();
+        frappe.dom.unfreeze();
+    });
   },
   schedule_send_dialog(frm) {
 		let hours = frappe.utils.range(24);

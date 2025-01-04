@@ -53,6 +53,7 @@
    "collapsible": 1,
    "fieldname": "general_configuration_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "General Configuration"
   },
   {
@@ -93,7 +94,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-25 13:47:43.176041",
+ "modified": "2025-01-04 12:32:56.952795",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Cloud API Settings",

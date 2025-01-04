@@ -21,12 +21,12 @@ frappe.ui.form.on('Notification', {
 			"description": "Attach a file"
 		}]
 
-		if (frappe.model.can_print(null, cur_frm) && !meta.issingle) {
-			doc_field_list.push({
-				"value": "Print Format",
-				"description": "Print Format"
-			})
-		}
+		// if (frappe.model.can_print(null, cur_frm) && !meta.issingle) {
+		// 	doc_field_list.push({
+		// 		"value": "Print Format",
+		// 		"description": "Print Format"
+		// 	})
+		// }
 		let data_link_dict = {}
 		meta.fields.forEach((e) => { if (e.fieldtype == "Data" || e.fieldtype == "Link") { data_link_dict[e.fieldname] = e.label } })
 
@@ -80,9 +80,9 @@ frappe.ui.form.on('Notification', {
 						Array.from(elements).forEach((e) => { e.addEventListener("click", function () { verify(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict); }); })
 						cur_frm.fields_list = data.parameter
 						let option_list = ["Attachment"]
-						if (frappe.model.can_print(null, cur_frm) && !meta.issingle) {
-							option_list.push("Print Format")
-						}
+						// if (frappe.model.can_print(null, cur_frm) && !meta.issingle) {
+						// 	option_list.push("Print Format")
+						// }
 						data.parameter.forEach((e) => {
 							if (e.location == "header") {
 								d.make_field({
@@ -90,8 +90,11 @@ frappe.ui.form.on('Notification', {
 									"label": e.field_name,
 									"fieldname": e.field_name,
 									"options": option_list,
-									"reqd": 1
+									"reqd": 1,
 								})
+								let field = d.get_field(e.field_name);
+								field.set_value("Attachment");
+								field.refresh();
 							} else {
 								d.make_field({
 									"fieldtype": "MultiSelect",
@@ -108,6 +111,12 @@ frappe.ui.form.on('Notification', {
 								"hidden": true
 							})
 							d.get_field(e.field_name + "_attachment").refresh()
+							if(e.location == "header"){
+								let field = d.get_field(e.field_name + "_attachment");
+								field.set_value(data.header_media);
+								field.refresh();
+							}
+							
 							// make print_format field for every field
 							d.make_field({
 								"label": __("Select Print Format"),
@@ -122,31 +131,33 @@ frappe.ui.form.on('Notification', {
 							if (e.location != "header") {
 								d.get_field(e.field_name).set_data(doc_field_list)
 							}
-							d.fields_dict[e.field_name].input.onchange = function () {
-								if (this.value && this.value.replace(", ", "") == "Attachment") {
-									d.get_field(e.field_name + "_attachment").df.hidden = false
-									d.get_field(e.field_name + "_attachment").value = ""
-									d.get_field(e.field_name + "_attachment").refresh()
+							if(e.location != "header"){
+								d.fields_dict[e.field_name].input.onchange = function () {
+									if (this.value && this.value.replace(", ", "") == "Attachment") {
+										d.get_field(e.field_name + "_attachment").df.hidden = false
+										d.get_field(e.field_name + "_attachment").value = ""
+										d.get_field(e.field_name + "_attachment").refresh()
 
-									d.get_field(e.field_name + "_print_format").df.hidden = true
-									d.get_field(e.field_name + "_print_format").refresh()
-									cur_frm.dialog_context[e.field_name] = ""
+										d.get_field(e.field_name + "_print_format").df.hidden = true
+										d.get_field(e.field_name + "_print_format").refresh()
+										cur_frm.dialog_context[e.field_name] = ""
+									}
+									else if (this.value && this.value.replace(", ", "") == "Print Format") {
+										d.get_field(e.field_name + "_attachment").df.hidden = true
+										d.get_field(e.field_name + "_attachment").refresh()
+
+										d.get_field(e.field_name + "_print_format").df.hidden = false
+										d.get_field(e.field_name + "_print_format").refresh()
+										cur_frm.dialog_context[e.field_name] = ""
+									} else {
+										d.get_field(e.field_name + "_attachment").df.hidden = true
+										d.get_field(e.field_name + "_attachment").refresh()
+
+										d.get_field(e.field_name + "_print_format").df.hidden = true
+										d.get_field(e.field_name + "_print_format").refresh()
+									}
+									verify(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict)
 								}
-								else if (this.value && this.value.replace(", ", "") == "Print Format") {
-									d.get_field(e.field_name + "_attachment").df.hidden = true
-									d.get_field(e.field_name + "_attachment").refresh()
-
-									d.get_field(e.field_name + "_print_format").df.hidden = false
-									d.get_field(e.field_name + "_print_format").refresh()
-									cur_frm.dialog_context[e.field_name] = ""
-								} else {
-									d.get_field(e.field_name + "_attachment").df.hidden = true
-									d.get_field(e.field_name + "_attachment").refresh()
-
-									d.get_field(e.field_name + "_print_format").df.hidden = true
-									d.get_field(e.field_name + "_print_format").refresh()
-								}
-								verify(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict)
 							}
 						})
 						let header_html = "";
@@ -247,6 +258,7 @@ setup_whatsapp_template: function (frm) {
 
 
 function verify(d, context, data, header_html, data_dict) {
+	console.log(d, context, data_dict)
 	for (const [key, value] of Object.entries(context)) {
 		if ((d.get_field(key).input.value).replace(", ", "") == "Attachment") {
 			if (d.get_field(key + "_attachment").value == null || d.get_field(key + "_attachment").value.length == 0) {

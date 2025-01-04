@@ -11,7 +11,7 @@ from six import string_types
 
 from frappe.model.document import Document
 # Process template while saving them in WhatsApp Communication.
-def process_template_parameter(template = None, template_parameter = None):
+def process_template_parameter(template = None, template_parameter = None, header_media = None):
 	frappe.log_error("pro",[template, template_parameter])
 	if isinstance(template_parameter, str):
 		template_parameter = json.loads(template_parameter)
@@ -26,7 +26,10 @@ def process_template_parameter(template = None, template_parameter = None):
 			temp["location"] = row.get("location")
 			temp["subtype"] = row.get("subtype")
 			temp["type"] = row.get("type")
-			temp["value"] = template_parameter.get(row.get("field_name"))
+			if header_media:
+				temp["value"] = header_media
+			else:
+				temp["value"] = template_parameter.get(row.get("field_name"))
 			items.append(temp)
 	return items
 class WhatsAppCommunication(Document):
@@ -258,7 +261,7 @@ class WhatsAppCommunication(Document):
 		"""
 		Create WhatsApp Communication with given data.
 		"""
-		template_items = process_template_parameter(template, template_parameter)
+		template_items = process_template_parameter(template, template_parameter, header_media)
 		frappe.log_error("log", header_media)
 		wa_msg = frappe.get_doc({
 			"doctype": "WhatsApp Communication",

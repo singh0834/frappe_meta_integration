@@ -21,16 +21,6 @@ $(document).ready(function () {
     });
 });
 
-// frappe.views.WhatsAppComposer = class {
-//     constructor(opts) {
-//         $.extend(this, opts);
-//         this.doc = this.frm && this.frm.doc || {};
-//         this.make();
-//     }
-//     make() {
-//         send_sms(cur_frm);
-//     }
-// };
 
 function send_sms(frm) {
     if (frm.is_dirty()) {
@@ -151,13 +141,13 @@ function process_template_data(d, data, context) {
 
     let option_list = ["Attachment"];
 
-    if (frappe.model.can_print(null, cur_frm) && !cur_frm.meta.issingle) {
-        option_list.push("Print Format");
-    }
+    // if (frappe.model.can_print(null, cur_frm) && !cur_frm.meta.issingle) {
+    //     option_list.push("Print Format");
+    // }
 
     cur_frm.fields_list = data.parameter;
     data.parameter.forEach((param) => {
-        create_template_field(param, option_list, d, context);
+        create_template_field(param, option_list, d, context, data);
         context[param.field_name] = "";
     });
 
@@ -165,7 +155,7 @@ function process_template_data(d, data, context) {
 }
 
 // Create fields for the template parameters
-function create_template_field(param, option_list, d, context) {
+function create_template_field(param, option_list, d, context, data_tempalate) {
     console.log(param, option_list, context)
     // Create Select field for header location
     console.log(param)
@@ -177,6 +167,9 @@ function create_template_field(param, option_list, d, context) {
             "options": option_list,
             "reqd": 1
         });
+        let field = d.get_field(param.field_name);
+        field.set_value("Attachment");
+        field.refresh();
     } else {
         d.make_field({
             "fieldtype": "MultiSelect",
@@ -193,7 +186,6 @@ function create_template_field(param, option_list, d, context) {
         "fieldname": `${param.field_name}_attachment`,
         "hidden": true
     });
-
     // Create Print Format field (hidden by default)
     d.make_field({
         "label": __("Select Print Format"),
@@ -205,6 +197,11 @@ function create_template_field(param, option_list, d, context) {
 
     // Refresh fields after creation
     d.get_field(`${param.field_name}_attachment`).refresh();
+    if(param.location == "header" && param.type != "text"){
+        let field = d.get_field(param.field_name + "_attachment");
+        field.set_value(data_tempalate.header_media);
+        field.refresh();
+    }
     d.get_field(`${param.field_name}_print_format`).refresh();
     d.get_field(param.field_name).refresh();
     context[param.field_name] = "";
@@ -310,12 +307,12 @@ function get_doc_field_list() {
         { "value": "Attachment", "description": "Attach a file" }
     ];
 
-    if (frappe.model.can_print(null, cur_frm) && !cur_frm.meta.issingle) {
-        doc_field_list.push({
-            "value": "Print Format",
-            "description": "Print Format"
-        });
-    }
+    // if (frappe.model.can_print(null, cur_frm) && !cur_frm.meta.issingle) {
+    //     doc_field_list.push({
+    //         "value": "Print Format",
+    //         "description": "Print Format"
+    //     });
+    // }
 
     return doc_field_list;
 }

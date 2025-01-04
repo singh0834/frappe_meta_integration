@@ -45,19 +45,12 @@ class WhatsAppCampaign(Document):
         for row in self.parameters:
             # temp_data = {}
             if row.get("value") == 'whatsapp_parameter':
-                # temp_data["parameter"] = row.get("parameter")
-                # temp_data["type"] = row.get("type")
-                # temp_data["subtype"] = row.get("subtype")
                 temp_data = copy.copy(row)
                 temp_data.value = recipient_data.get(number)
                 temp_param.append(temp_data)
             else:
-                # temp_data["parameter"] = row.get("parameter")
-                # temp_data["type"] = row.get("type")
-                # temp_data["subtype"] = row.get("subtype")
-                # temp_data["value"] = row.get("value")
                 temp_param.append(row)
-        frappe.log_error("hi",temp_param)
+        # frappe.log_error("hi",temp_param)
         return temp_param
     
     @frappe.whitelist()
@@ -83,22 +76,7 @@ class WhatsAppCampaign(Document):
                     "reference_dn" : self.name,
                     
                 })
-                # whatsapp_communication = frappe.new_doc('WhatsApp Communication')
-                # validated_number = WhatsAppCommunication.validate_and_normalize_number(self, recipient.whatsapp_number)
-                # whatsapp_communication.to = validated_number
-                # whatsapp_communication.message_type = self.message_type
-                # whatsapp_communication.header_media = f"{frappe.utils.get_url()}{urllib.parse.quote(self.header_media)}"
-                # whatsapp_communication.campaign_name = self.name
-                # whatsapp_communication.campaign_reipient_name = recipient.name
-                # whatsapp_communication.message_body = self.message_body
-                # whatsapp_communication.media_filename = self.media_filename
-                # whatsapp_communication.media_caption = self.media_caption
-                # whatsapp_communication.media_file = self.media_file
-                # whatsapp_communication.media_image = self.media_image
-                # whatsapp_communication.whatsapp_message_template = self.whatsapp_message_template
-                # whatsapp_communication.parameters = self.check_parameter(recipient.whatsapp_number)
-                # whatsapp_communication.reference_dt = self.doctype
-                # whatsapp_communication.reference_dn = self.name
+                
                 whatsapp_communication.save(ignore_permissions=True)
                 whatsapp_communication.send_message()
                 frappe.db.set_value('WhatsApp Campaign Recipient', recipient.name, 'whatsapp_communication', whatsapp_communication.name)
@@ -110,8 +88,14 @@ class WhatsAppCampaign(Document):
                 self.reload()
         else:
             frappe.throw("Recipient is required to send messages")
-
     
+    # Send Instant Message:--
+    @frappe.whitelist()
+    def send_whatsapp(self):
+        """Send Instant Message"""
+        self.docstatus = 1
+        self.save(ignore_permissions = 1)
+        frappe.db.commit()
     ##############################################
     
     @frappe.whitelist()
@@ -163,7 +147,7 @@ class WhatsAppCampaign(Document):
 
             # Format the filters
             formatted_filters = self.format_filters(filters)
-            frappe.log_error("formatted_filters", formatted_filters)
+            # frappe.log_error("formatted_filters", formatted_filters)
 
             if not formatted_filters:
                 frappe.throw(("No valid filters found after formatting"))
@@ -233,13 +217,13 @@ class WhatsAppCampaign(Document):
                         })
                         recipient_data[phone] = name or 'Unknown'
                         seen_phones.add(phone)
-                        frappe.log_error(f"Added new phone: {phone}", seen_phones)
+                        # frappe.log_error(f"Added new phone: {phone}", seen_phones)
 
             if not recipients:
                 frappe.msgprint(("No new recipients found with the current filters"))
             self.recipient_data = json.dumps(recipient_data)
             
-            frappe.log_error("Final recipients list", recipients)
+            # frappe.log_error("Final recipients list", recipients)
             return recipients
 
         except Exception as e:
@@ -421,6 +405,9 @@ class WhatsAppCampaign(Document):
                 
                 
                 
+
+
+
 # Send Scheduled whatsapp :-
 def send_scheduled_whatsapp():
     """Send scheduled Whatsapp to the recipients."""
@@ -438,7 +425,7 @@ def send_scheduled_whatsapp():
 
     for campaign_name in scheduled_whatsapp:
         try:
-            frappe.log_error("camp", campaign_name)
+            # frappe.log_error("camp", campaign_name)
             whatsapp_campaign = frappe.get_doc("WhatsApp Campaign", campaign_name)
             whatsapp_campaign.whatsapp_sent = 1
             whatsapp_campaign.submit()

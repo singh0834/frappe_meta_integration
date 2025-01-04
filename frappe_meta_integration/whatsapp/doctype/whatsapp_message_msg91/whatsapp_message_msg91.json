@@ -12,6 +12,7 @@
   "column_break_yqxo",
   "header_has_media",
   "media_type",
+  "header_media",
   "header",
   "footer",
   "category",
@@ -59,12 +60,13 @@
   {
    "fieldname": "header",
    "fieldtype": "Data",
-   "label": "Header",
-   "mandatory_depends_on": "eval: doc.header_has_media == 0"
+   "hidden": 1,
+   "label": "Header"
   },
   {
    "fieldname": "footer",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Footer"
   },
   {
@@ -92,11 +94,18 @@
    "fieldname": "namespace",
    "fieldtype": "Data",
    "label": "Namespace"
+  },
+  {
+   "depends_on": "eval:doc.media_type != ''",
+   "fieldname": "header_media",
+   "fieldtype": "Attach",
+   "label": "Header Media",
+   "mandatory_depends_on": "eval:doc.media_type != ''"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-25 16:13:32.826153",
+ "modified": "2025-01-04 15:10:29.062309",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Message MSG91",

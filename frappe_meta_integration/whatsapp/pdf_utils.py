@@ -2,22 +2,11 @@ from __future__ import unicode_literals
 import frappe
 from frappe import get_print as p
 from frappe import _
+import json
+import urllib
 from frappe import publish_progress
 from frappe.utils.file_manager import save_file
-
-
-
-
-
-
-from os import environ
-import json, re
-from frappe.utils import cstr
-from frappe.utils import get_url
 from frappe.utils.pdf import get_pdf
-from PyPDF2 import PdfReader, PdfWriter
-import io, requests
-from werkzeug.wrappers import Response, Request
 
 
 
@@ -105,3 +94,22 @@ def save_and_attach(content, to_doctype, to_name, folder):
     file_url = save_file(file_name, content, to_doctype, to_name, folder=folder, is_private=1)
     return file_url
 
+@frappe.whitelist()
+def get_attach_link(doc, print_format):
+    doc = json.loads(doc)
+    doc = frappe.get_doc(doc.get("doctype"), doc.get("docname"))
+    key = frappe.db.get_value("Document Share Key",{
+                'reference_doctype': doc.doctype,
+                'reference_docname': doc.name,
+                'creation': ('>=', frappe.utils.today())
+			},"key")
+    if not key:
+        key = doc.get_document_share_key()
+    url = f'{frappe.utils.get_url()}/{safe_encode(doc.get("doctype"))}/{safe_encode(doc.get("name"))}?format={safe_encode(print_format)}&key={safe_encode(key)}'
+    return url
+def safe_encode(value):
+    return urllib.parse.quote(value.encode("utf-8") if value else '')
+
+
+    
+    

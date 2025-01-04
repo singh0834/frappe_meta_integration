@@ -54,8 +54,12 @@ class SendNotification(Notification):
 		# 	file_ref = save_and_attach(pdf_data, doctype, docname, title_folder)
 		# 	pdf_link = file_ref.file_url
 		# 	file_name = file_ref.file_name
+		url = ""
 		if whatsapp_template.get("header_has_media"):
-			params["header_1"] = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
+			if "https" in params.get("header_1"):
+				url = params.get("header_1")
+			else:
+				url = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
 		WhatsAppCommunication.send_whatsapp_message(
 			receiver_list=self.get_receiver_list(doc, context),
 			message=frappe.render_template(self.message, context),
@@ -65,5 +69,5 @@ class SendNotification(Notification):
 			template_parameter = params,
 			media = pdf_link,
 			file_name = file_name,
-			header_media = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}' if whatsapp_template.get("header_has_media") else None
+			header_media = url if whatsapp_template.get("header_has_media") else None
 		)

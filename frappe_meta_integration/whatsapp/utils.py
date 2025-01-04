@@ -133,13 +133,22 @@ def send_whatsapp_msg(doctype, docname, args, template_parameter):
 
 	# Calling Method from whatsApp Communication model to send the template
 	# template_parameter = str(template_parameter)
+	template_in_json = json.loads(template_parameter)
+	template = frappe.get_doc("WhatsApp Message MSG91", template)
+	url = ""
+	if template.get("header_has_media"):
+		if "https" in template_in_json.get("header_1"):
+			url = template_in_json.get("header_1")
+		else:
+			url = f'{frappe.utils.get_url()}{urllib.parse.quote(template_in_json.get("header_1"))}'
 	WhatsAppCommunication.send_whatsapp_message(
 		receiver_list = receiver_list,
 		message = message,
-		template = template,
+		template = template.name,
 		doctype = doctype,
 		docname = docname,
 		template_parameter = template_parameter,
 		media = pdf_link,
-		file_name = file_name
+		file_name = file_name,
+		header_media = url if template.get("header_has_media") else None
 	)

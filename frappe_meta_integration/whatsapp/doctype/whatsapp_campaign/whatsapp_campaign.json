@@ -10,14 +10,13 @@
  "field_order": [
   "naming_series",
   "campaign_name",
-  "campaign_date",
   "schedule_send",
   "schedule_sending",
   "whatsapp_sent",
   "message_type",
   "recipient_data",
-  "parameter_data",
   "column_break_dzbea",
+  "campaign_date",
   "message_body",
   "template",
   "select_doctype",
@@ -29,10 +28,11 @@
   "media_image",
   "message_template_information_section",
   "whatsapp_message_template",
-  "header_has_media",
+  "parameter_data",
   "media_type",
-  "header_media",
   "parameter_count",
+  "header_media",
+  "header_has_media",
   "parameters",
   "recipients_section",
   "recipients",
@@ -47,6 +47,7 @@
   {
    "fieldname": "campaign_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Campaign Date",
    "options": "Today"
   },
@@ -120,6 +121,7 @@
    "depends_on": "eval:(doc.message_type!=\"Text\" && doc.message_type!=\"Template\")",
    "fieldname": "media_information_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Media Information"
   },
   {
@@ -159,11 +161,13 @@
    "default": "0",
    "fieldname": "schedule_sending",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "schedule_sending"
   },
   {
    "fieldname": "schedule_send",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Send WhatsApp At"
   },
   {
@@ -191,6 +195,7 @@
    "default": "0",
    "fieldname": "whatsapp_sent",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "WhatsApp Sent"
   },
   {
@@ -203,6 +208,7 @@
   {
    "fieldname": "recipient_data",
    "fieldtype": "Code",
+   "hidden": 1,
    "label": "Recipient Data"
   },
   {
@@ -213,13 +219,14 @@
   {
    "fieldname": "saved_filters",
    "fieldtype": "Long Text",
+   "hidden": 1,
    "label": "Saved Filters"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-03 16:02:54.841524",
+ "modified": "2025-01-03 18:17:46.281191",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",

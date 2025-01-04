@@ -102,7 +102,6 @@ def parse_templates(data):
 
 def create_template_records(data):
     try:
-        frappe.log_error("data", data)
         template_records = []
         for template in data:
             template_name = template.get('name')
@@ -175,6 +174,14 @@ def create_template_records(data):
                     'template': template_text.strip(),
                     'parameter': parameters
                 }
+                existing_template = frappe.db.exists(
+                    "WhatsApp Message MSG91",
+                    {
+                        "name": template_name
+                    }
+                )
+                if existing_template:
+                    continue
                 doc = frappe.get_doc({
                     'doctype': 'WhatsApp Message MSG91',
                     'enabled': 1,
@@ -183,7 +190,7 @@ def create_template_records(data):
                 doc.insert()
                 template_records.append(template_record)
 
-        frappe.log_error("templates", template_records)
+        # frappe.log_error("templates", template_records)
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Templates Errored")
         return [False, "Failed to Save the Template"]
