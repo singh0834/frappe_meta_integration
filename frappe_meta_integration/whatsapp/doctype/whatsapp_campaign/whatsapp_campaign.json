@@ -13,11 +13,23 @@
   "campaign_date",
   "message_type",
   "parameter_data",
+  "test_campaign",
+  "test",
   "column_break_dzbea",
   "message_body",
   "select_doctype",
   "saved_filters",
   "recipient_data",
+  "statistics_section",
+  "pending",
+  "read",
+  "received",
+  "column_break_axdr",
+  "sent",
+  "delivered",
+  "column_break_qdrw",
+  "marked_as_seen",
+  "failed",
   "media_information_section",
   "media_filename",
   "media_caption",
@@ -164,12 +176,70 @@
    "fieldname": "parameter_data",
    "fieldtype": "Select",
    "label": "Parameter Data"
+  },
+  {
+   "fieldname": "test_campaign",
+   "fieldtype": "Int",
+   "label": "Test Campaign"
+  },
+  {
+   "fieldname": "test",
+   "fieldtype": "Button",
+   "label": "Test"
+  },
+  {
+   "fieldname": "statistics_section",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "delivered",
+   "fieldtype": "HTML",
+   "label": "Delivered"
+  },
+  {
+   "fieldname": "pending",
+   "fieldtype": "HTML",
+   "label": "Pending"
+  },
+  {
+   "fieldname": "read",
+   "fieldtype": "HTML",
+   "label": "Read"
+  },
+  {
+   "fieldname": "received",
+   "fieldtype": "HTML",
+   "label": "Received"
+  },
+  {
+   "fieldname": "marked_as_seen",
+   "fieldtype": "HTML",
+   "label": "Marked As Seen"
+  },
+  {
+   "fieldname": "column_break_axdr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sent",
+   "fieldtype": "HTML",
+   "label": "Sent"
+  },
+  {
+   "fieldname": "failed",
+   "fieldtype": "HTML",
+   "label": "Failed"
+  },
+  {
+   "fieldname": "column_break_qdrw",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-03 14:39:04.699182",
+ "modified": "2025-01-06 14:14:35.451015",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",

@@ -196,3 +196,67 @@ class WhatsAppCampaign(Document):
                 frappe.throw(("WhatsApp number is required for all recipients"))
             if len(str(recipient.whatsapp_number).strip()) < 10:
                 frappe.throw(("Invalid WhatsApp number for recipient: {0}").format(recipient.person_name or "Unknown"))
+                
+                
+                
+def get_campaign_status_counts(reference_dn):
+    status_types = [
+        "pending", "read", "received", "sent", 
+        "label", "delivered", "marked_as_seen", "failed"
+    ]
+    
+    return {
+        status: frappe.db.count(
+            "WhatsApp Communication",
+            filters={
+                "reference_dn": reference_dn,
+                "status": status,
+            }
+        ) for status in status_types
+    }
+
+def get_html_content(status, count):
+    """
+    Generate HTML content for status display
+    """
+    status_colors = {
+        "pending": "#FFA500",      # Orange
+        "read": "#28a745",         # Green
+        "received": "#007bff",     # Blue
+        "sent": "#17a2b8",         # Cyan
+        "label": "#6c757d",        # Gray
+        "delivered": "#28a745",    # Green
+        "marked_as_seen": "#28a745", # Green
+        "failed": "#dc3545"        # Red
+    }
+    
+    return f"""
+    <div style="padding: 10px; border-radius: 5px; background-color: {status_colors.get(status, '#6c757d')}; color: white; text-align: center;">
+        <div style="font-size: 24px; font-weight: bold;">{count}</div>
+        <div style="text-transform: uppercase; font-size: 12px;">{status.replace('_', ' ')}</div>
+    </div>
+    """
+
+def update_campaign_counts(doc, method=None):
+
+    if not doc.reference_dn:
+        return
+        
+    try:
+        # Get all status counts for this campaign
+        status_counts = get_campaign_status_counts(doc.reference_dn)
+        
+        # Get and update the campaign document
+        campaign = frappe.get_doc("WhatsApp Campaign", doc.reference_dn)
+        
+        # Update each status HTML field
+        for status, count in status_counts.items():
+            html_content = get_html_content(status, count)
+            campaign.set(status, html_content)
+        
+        # Save the document
+        campaign.save(ignore_permissions=True)
+        frappe.db.commit()
+        
+    except Exception as e:
+        frappe.log_error(f"Error updating WhatsApp Campaign counts: {str(e)}")

@@ -69,12 +69,6 @@ frappe.ui.form.on('WhatsApp Campaign', {
             const styleSheet = document.createElement('style');
             styleSheet.id = 'whatsapp-campaign-styles';
             styleSheet.textContent = `
-              .filter-section {
-                  margin: 15px 0;
-                  padding: 15px;
-                  border: 1px solid #d1d8dd;
-                  border-radius: 4px;
-              }
 
               .filter-area {
                   margin-bottom: 15px;
@@ -288,5 +282,26 @@ frappe.ui.form.on('WhatsApp Campaign', {
                 frappe.msgprint(__('Failed to fetch parameters.'));
                 frm.set_df_property('parameter_data', 'options', '');
             });
+    }
+});
+
+frappe.ui.form.on('WhatsApp Campaign', {
+    onload_post_render: function (frm) {
+        // Exit early if Customer Name is not specified
+        if (!frm.doc.name) {
+            frappe.msgprint(__('Customer Name is not specified. Please provide it.'));
+            return;
+        }
+        
+        const deviceFilters = [
+            { field: 'pending', label: 'Pending', filters: { pending: frm.doc.name } },
+            { field: 'read', label: 'Read', filters: { read: frm.doc.name, } },
+            { field: 'received', label: 'Received', filters: { received: frm.doc.name } },
+            { field: 'read', label: 'Read', filters: { read: frm.doc.name } },
+            { field: 'sent', label: 'Sent', filters: { sent: frm.doc.name } },
+            { field: 'delivered', label: 'Delivered', filters: { delivered: frm.doc.name} },
+            { field: 'marked_as_seen', label: 'Marked As Seen', filters: { marked_as_seen: frm.doc.name} },
+            { field: 'failed', label: 'Failed', filters: { failed: frm.doc.name} },
+        ];
     }
 });
