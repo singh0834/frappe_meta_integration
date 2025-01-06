@@ -293,10 +293,6 @@ frappe.ui.form.on('WhatsApp Campaign', {
           const styleSheet = document.createElement('style');
           styleSheet.id = 'whatsapp-campaign-styles';
           styleSheet.textContent = `
-            .filter-section {
-                margin: 15px 0;
-                padding: 15px;
-            }
 
             .filter-area {
                 margin-bottom: 15px;
