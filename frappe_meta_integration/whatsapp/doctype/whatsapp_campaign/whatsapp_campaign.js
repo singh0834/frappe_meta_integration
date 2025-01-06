@@ -296,8 +296,6 @@ frappe.ui.form.on('WhatsApp Campaign', {
             .filter-section {
                 margin: 15px 0;
                 padding: 15px;
-                border: 1px solid #d1d8dd;
-                border-radius: 4px;
             }
 
             .filter-area {
