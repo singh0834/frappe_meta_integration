@@ -305,3 +305,156 @@ frappe.ui.form.on('WhatsApp Campaign', {
         ];
     }
 });
+
+
+
+//new code
+
+frappe.ui.form.on('WhatsApp Campaign', {
+    refresh: function (frm) {
+        let html = `
+            <div class="status-container">
+                <style>
+                    .status-container {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        padding: 30px;
+                        border-radius: 10px;
+                        margin-left: 40px;
+                    }
+                    .status-grid {
+                        display: grid;
+                        grid-template-columns: repeat(8, 1fr);
+                        gap: 15px;
+                        margin-bottom: 30px;
+                    }
+                    /* Base styles for all status items */
+                    .status-item {
+                        padding: 20px;
+                        border-radius: 8px;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        text-align: center;
+                        white-space: nowrap;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    }
+                    /* Consistent hover effect for all items */
+                    .status-item:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    }
+                    /* Label and count styles */
+                    .status-item .status-label {
+                        font-size: 14px;
+                        text-transform: capitalize;
+                        margin-bottom: 5px;
+                    }
+                    .status-item .status-count {
+                        font-size: 24px;
+                        font-weight: 600;
+                    }
+                    /* Status-specific colors */
+                    .status-item.total-messages .status-label,
+                    .status-item.total-messages .status-count { color: black; }
+                    .status-item.pending .status-label,
+                    .status-item.pending .status-count { color: orange; }
+                    .status-item.read .status-label,
+                    .status-item.read .status-count { color: blue; }
+                    .status-item.received .status-label,
+                    .status-item.received .status-count { color: green; }
+                    .status-item.sent .status-label,
+                    .status-item.sent .status-count { color: purple; }
+                    .status-item.delivered .status-label,
+                    .status-item.delivered .status-count { color: teal; }
+                    .status-item.marked-as-seen .status-label,
+                    .status-item.marked-as-seen .status-count { color: brown; }
+                    .status-item.failed .status-label,
+                    .status-item.failed .status-count { color: red; }
+
+                    @media (max-width: 768px) {
+                        .status-grid {
+                            grid-template-columns: repeat(4, 1fr);
+                        }
+                    }
+                    @media (max-width: 480px) {
+                        .status-grid {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                    }
+                </style>
+
+                <div class="status-grid">
+                    <!-- Total Messages -->
+                    <div class="status-item total-messages"">
+                        <div class="status-label">Total</div>
+                        <div class="status-count">${frm.doc.total_int || 0}</div>
+                    </div>
+                    <!-- Pending -->
+                    <div class="status-item pending" data-status="Pending">
+                        <div class="status-label">Pending</div>
+                        <div class="status-count">${frm.doc.pending_int || 0}</div>
+                    </div>
+                    <!-- Read -->
+                    <div class="status-item read" data-status="Read">
+                        <div class="status-label">Read</div>
+                        <div class="status-count">${frm.doc.read_int || 0}</div>
+                    </div>
+                    <!-- Received -->
+                    <div class="status-item received" data-status="Received">
+                        <div class="status-label">Received</div>
+                        <div class="status-count">${frm.doc.received_int || 0}</div>
+                    </div>
+                    <!-- Sent -->
+                    <div class="status-item sent" data-status="Sent">
+                        <div class="status-label">Sent</div>
+                        <div class="status-count">${frm.doc.sent_int || 0}</div>
+                    </div>
+                    <!-- Delivered -->
+                    <div class="status-item delivered" data-status="Delivered">
+                        <div class="status-label">Delivered</div>
+                        <div class="status-count">${frm.doc.delivered_int || 0}</div>
+                    </div>
+                    <!-- Marked as Seen -->
+                    <div class="status-item marked-as-seen" data-status="Marked as Seen">
+                        <div class="status-label">Marked as Seen</div>
+                        <div class="status-count">${frm.doc.marked_as_seen_int || 0}</div>
+                    </div>
+                    <!-- Failed -->
+                    <div class="status-item failed" data-status="Failed">
+                        <div class="status-label">Failed</div>
+                        <div class="status-count">${frm.doc.failed_int || 0}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Set the HTML content
+        $(frm.fields_dict.overview.wrapper).html(html);
+
+        // Attach click handlers with proper event delegation
+        $(frm.fields_dict.overview.wrapper).on('click', '.status-item', function() {
+            let status = $(this).data('status');
+            // Create URL object to handle parameters properly
+            let url = new URL('/app/whatsapp-communication', window.location.origin);
+            // Use URLSearchParams to set the parameter without encoding spaces
+            url.searchParams.set('status', status);
+            // Get the final URL and decode it to preserve spaces
+            let finalUrl = decodeURIComponent(url.toString());
+            window.location.href = finalUrl;
+        });
+    },
+
+    on_submit: function (frm) {
+        frappe.call({
+            method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.get_campaign_status_counts',
+            args: {
+                name: frm.doc.name
+            },
+            callback: function (r) {
+                if (r.message && r.message.success) {
+                    frm.reload_doc();
+                }
+            }
+        });
+    }
+});

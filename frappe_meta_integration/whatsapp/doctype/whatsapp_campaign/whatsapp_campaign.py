@@ -260,3 +260,68 @@ def update_campaign_counts(doc, method=None):
         
     except Exception as e:
         frappe.log_error(f"Error updating WhatsApp Campaign counts: {str(e)}")
+
+
+#newly added
+
+@frappe.whitelist()
+def get_campaign_status_counts(name):
+    # Define status types
+    status_types = [
+        "pending", "read", "received", "sent",
+        "delivered", "marked_as_seen", "failed"
+    ]
+    # Initialize status counts
+    status_counts = {status: 0 for status in status_types}
+
+    # Get all WhatsApp Communications for this campaign
+    records = frappe.get_all(
+        "WhatsApp Communication",
+        filters={"reference_dn": name},
+        fields=["status"]
+    )
+
+    # Count statuses
+    for record in records:
+        status = record.get("status")
+        status = status.lower() if status else ""
+        if status in status_counts:
+            status_counts[status] += 1
+
+    # Calculate total
+    total = sum(status_counts.values())
+
+    # Log for debugging
+    frappe.log_error("Status counts", status_counts)
+    frappe.log_error("Total are", total)
+
+    # Update the campaign document with integer fields
+    campaign = frappe.get_doc("WhatsApp Campaign", name)
+
+    # Map status to integer field names
+    field_mapping = {
+        "pending": "pending_int",
+        "read": "read_int",
+        "received": "received_int",
+        "sent": "sent_int",
+        "delivered": "delivered_int",
+        "marked_as_seen": "marked_as_seen_int",
+        "failed": "failed_int"
+    }
+
+    # Update integer fields
+    for status, field_name in field_mapping.items():
+        campaign.set(field_name, status_counts.get(status, 0))
+
+    # Update total
+    campaign.set("total_int", total)
+
+    # Save the document
+    campaign.save(ignore_permissions=True)
+
+    return {
+        "success": True,
+        "message": "Campaign counts retrieved and saved successfully",
+        "status_counts": status_counts,
+        "total": total
+    }
