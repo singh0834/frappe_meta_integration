@@ -442,7 +442,7 @@ def send_scheduled_whatsapp():
 
 
 
-//added dashboard
+#added dashboard
 
 @frappe.whitelist()
 def get_campaign_status_counts(name):
