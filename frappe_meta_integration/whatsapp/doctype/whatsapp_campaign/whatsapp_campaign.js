@@ -644,7 +644,7 @@ frappe.ui.form.on('WhatsApp Campaign', {
         });
     },
 
-    on_submit: function (frm) {
+    after_save: function (frm) {
         frappe.call({
             method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.get_campaign_status_counts',
             args: {
