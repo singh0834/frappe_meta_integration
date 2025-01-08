@@ -485,9 +485,7 @@ def get_campaign_status_counts(name):
     campaign.db_set('delivered', status_counts.get("delivered", 0))
     campaign.db_set('marked_as_seen', status_counts.get("marked_as_seen", 0))
     campaign.db_set('failed', status_counts.get("failed", 0))
-
-    # Update total
-    campaign.db_set("total_int", total)
+    campaign.db_set("total", total)
 
     # # Map status to integer field names
     # field_mapping = {
