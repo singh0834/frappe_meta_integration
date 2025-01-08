@@ -587,42 +587,42 @@ frappe.ui.form.on('WhatsApp Campaign', {
                     <!-- Total Messages -->
                     <div class="status-item total-messages"">
                         <div class="status-label">Total</div>
-                        <div class="status-count">${frm.doc.total_int || 0}</div>
+                        <div class="status-count">${frm.doc.total || 0}</div>
                     </div>
                     <!-- Pending -->
                     <div class="status-item pending" data-status="Pending">
                         <div class="status-label">Pending</div>
-                        <div class="status-count">${frm.doc.pending_int || 0}</div>
+                        <div class="status-count">${frm.doc.pending || 0}</div>
                     </div>
                     <!-- Read -->
                     <div class="status-item read" data-status="Read">
                         <div class="status-label">Read</div>
-                        <div class="status-count">${frm.doc.read_int || 0}</div>
+                        <div class="status-count">${frm.doc.read || 0}</div>
                     </div>
                     <!-- Received -->
                     <div class="status-item received" data-status="Received">
                         <div class="status-label">Received</div>
-                        <div class="status-count">${frm.doc.received_int || 0}</div>
+                        <div class="status-count">${frm.doc.received || 0}</div>
                     </div>
                     <!-- Sent -->
                     <div class="status-item sent" data-status="Sent">
                         <div class="status-label">Sent</div>
-                        <div class="status-count">${frm.doc.sent_int || 0}</div>
+                        <div class="status-count">${frm.doc.sent || 0}</div>
                     </div>
                     <!-- Delivered -->
                     <div class="status-item delivered" data-status="Delivered">
                         <div class="status-label">Delivered</div>
-                        <div class="status-count">${frm.doc.delivered_int || 0}</div>
+                        <div class="status-count">${frm.doc.delivered || 0}</div>
                     </div>
                     <!-- Marked as Seen -->
                     <div class="status-item marked-as-seen" data-status="Marked as Seen">
                         <div class="status-label">Marked as Seen</div>
-                        <div class="status-count">${frm.doc.marked_as_seen_int || 0}</div>
+                        <div class="status-count">${frm.doc.marked_as_seen || 0}</div>
                     </div>
                     <!-- Failed -->
                     <div class="status-item failed" data-status="Failed">
                         <div class="status-label">Failed</div>
-                        <div class="status-count">${frm.doc.failed_int || 0}</div>
+                        <div class="status-count">${frm.doc.failed || 0}</div>
                     </div>
                 </div>
             </div>
