@@ -478,26 +478,37 @@ def get_campaign_status_counts(name):
     # Update the campaign document with integer fields
     campaign = frappe.get_doc("WhatsApp Campaign", name)
 
-    # Map status to integer field names
-    field_mapping = {
-        "pending": "pending_int",
-        "read": "read_int",
-        "received": "received_int",
-        "sent": "sent_int",
-        "delivered": "delivered_int",
-        "marked_as_seen": "marked_as_seen_int",
-        "failed": "failed_int"
-    }
-
-    # Update integer fields
-    for status, field_name in field_mapping.items():
-        campaign.set(field_name, status_counts.get(status, 0))
+    campaign.db_set('pending', status_counts.get("pending", 0))
+    campaign.db_set('read', status_counts.get("read", 0))
+    campaign.db_set('received', status_counts.get("received", 0))
+    campaign.db_set('sent', status_counts.get("sent", 0))
+    campaign.db_set('delivered', status_counts.get("delivered", 0))
+    campaign.db_set('marked_as_seen', status_counts.get("marked_as_seen", 0))
+    campaign.db_set('failed', status_counts.get("failed", 0))
 
     # Update total
-    campaign.set("total_int", total)
+    campaign.db_set("total_int", total)
 
-    # Save the document
-    campaign.save(ignore_permissions=True)
+    # # Map status to integer field names
+    # field_mapping = {
+    #     "pending": "pending_int",
+    #     "read": "read_int",
+    #     "received": "received_int",
+    #     "sent": "sent_int",
+    #     "delivered": "delivered_int",
+    #     "marked_as_seen": "marked_as_seen_int",
+    #     "failed": "failed_int"
+    # }
+
+    # # Update integer fields
+    # for status, field_name in field_mapping.items():
+    #     campaign.set(field_name, status_counts.get(status, 0))
+
+    # # Update total
+    # campaign.set("total_int", total)
+
+    # # Save the document
+    # campaign.save(ignore_permissions=True)
 
     return {
         "success": True,
