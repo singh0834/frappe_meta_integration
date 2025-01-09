@@ -26,7 +26,7 @@ def process_template_parameter(template = None, template_parameter = None, heade
 			temp["location"] = row.get("location")
 			temp["subtype"] = row.get("subtype")
 			temp["type"] = row.get("type")
-			if header_media:
+			if header_media and row.get("location") == "header":
 				temp["value"] = header_media
 			else:
 				temp["value"] = template_parameter.get(row.get("field_name"))

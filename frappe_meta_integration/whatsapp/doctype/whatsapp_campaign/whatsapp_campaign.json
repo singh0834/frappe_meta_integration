@@ -15,6 +15,14 @@
   "whatsapp_sent",
   "message_type",
   "recipient_data",
+  "pending",
+  "read",
+  "received",
+  "delivered",
+  "marked_as_seen",
+  "sent",
+  "failed",
+  "total",
   "column_break_dzbea",
   "campaign_date",
   "message_body",
@@ -36,7 +44,10 @@
   "parameters",
   "recipients_section",
   "recipients",
-  "amended_from"
+  "amended_from",
+  "campaign_request_id",
+  "dashboard_tab",
+  "overview"
  ],
  "fields": [
   {
@@ -221,12 +232,71 @@
    "fieldtype": "Long Text",
    "hidden": 1,
    "label": "Saved Filters"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "campaign_request_id",
+   "fieldtype": "Small Text",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "campaign_request_id"
+  },
+  {
+   "fieldname": "dashboard_tab",
+   "fieldtype": "Tab Break",
+   "label": "Dashboard"
+  },
+  {
+   "fieldname": "overview",
+   "fieldtype": "HTML",
+   "label": "Overview",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pending",
+   "fieldtype": "Int",
+   "label": "Pending"
+  },
+  {
+   "fieldname": "read",
+   "fieldtype": "Int",
+   "label": "Read"
+  },
+  {
+   "fieldname": "received",
+   "fieldtype": "Int",
+   "label": "Received"
+  },
+  {
+   "fieldname": "delivered",
+   "fieldtype": "Int",
+   "label": "Delivered"
+  },
+  {
+   "fieldname": "marked_as_seen",
+   "fieldtype": "Int",
+   "label": "Marked as Seen"
+  },
+  {
+   "fieldname": "sent",
+   "fieldtype": "Int",
+   "label": "Sent"
+  },
+  {
+   "fieldname": "failed",
+   "fieldtype": "Int",
+   "label": "Failed"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Int",
+   "label": "Total"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-03 18:17:46.281191",
+ "modified": "2025-01-08 18:05:58.878567",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",
