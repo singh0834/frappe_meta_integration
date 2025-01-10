@@ -56,6 +56,23 @@ frappe.ui.form.on('WhatsApp Campaign', {
         frappe.dom.unfreeze();
     });
   },
+  send_template:function(frm){
+    frappe.call({
+        method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.send_test_template',
+        args:{
+            "doc": frm.doc
+        },
+        callback: function(r) {
+          console.log(r)
+          if(r.get('message') == "success"){
+            frappe.msgprint("Message Sent Successfully")
+          }
+          else{
+            frappe.msgprint("Message Sent Failed, check Error Log")
+          }
+        }
+      });
+  },
   schedule_send_dialog(frm) {
 		let hours = frappe.utils.range(24);
 		let time_slots = hours.map((hour) => {

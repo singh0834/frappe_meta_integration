@@ -499,3 +499,33 @@ def send_scheduled_whatsapp():
 #         "status_counts": status_counts,
 #         "total": total
 #     }
+@frappe.whitelist()
+def send_test_template(doc):
+    try:
+        doc = json.loads(doc)
+        for row in doc.get('parameters'):
+            if row.get('value') == None:
+                frappe.throw("Value Can't be Empty")
+        validated_number = WhatsAppCommunication.validate_and_normalize_number(doc, doc.get('phone_number'))
+        whatsapp_communication = frappe.get_doc({
+            "doctype":'WhatsApp Communication',
+            "to": validated_number,
+            "message_type":doc.get('message_type'),
+            "header_media": f"{frappe.utils.get_url()}{urllib.parse.quote(doc.get('header_media'))}" if doc.get('header_media') else None,
+            "campaign_name":doc.get('name'),
+            "message_body": doc.get('message_body'),
+            "media_filename" : doc.get('media_filename'),
+            "media_caption" : doc.get('media_caption'),
+            "media_image" : doc.get('media_image'),
+            "whatsapp_message_template" : doc.get('whatsapp_message_template'),
+            "parameters" : doc.get('parameters'),
+            "reference_dt" : doc.get('doctype'),
+            "reference_dn" : doc.get('name'),
+        })
+        
+        whatsapp_communication.save(ignore_permissions=True)
+        whatsapp_communication.send_message()
+        return 'success'
+    except Exception as e:
+        return "failed"
+        frappe.log_error("Send test template", str(e))

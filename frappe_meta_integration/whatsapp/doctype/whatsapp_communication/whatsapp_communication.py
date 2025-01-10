@@ -291,7 +291,7 @@ class WhatsAppCommunication(Document):
 		# wa_msg.insert(ignore_permissions=True)
 		# if media and file_name:
 			# wa_msg.upload_media() #Upload Attachment
-		# wa_msg.send_message() #Send Attachment/Text Message
+		wa_msg.send_message() #Send Attachment/Text Message
 
 			
      

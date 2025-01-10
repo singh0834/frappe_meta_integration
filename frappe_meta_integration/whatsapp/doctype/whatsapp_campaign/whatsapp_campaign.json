@@ -15,14 +15,9 @@
   "whatsapp_sent",
   "message_type",
   "recipient_data",
-  "pending",
-  "read",
-  "received",
-  "delivered",
-  "marked_as_seen",
-  "sent",
-  "failed",
-  "total",
+  "test_campaign",
+  "phone_number",
+  "send_template",
   "column_break_dzbea",
   "campaign_date",
   "message_body",
@@ -253,50 +248,29 @@
    "read_only": 1
   },
   {
-   "fieldname": "pending",
-   "fieldtype": "Int",
-   "label": "Pending"
+   "default": "0",
+   "fieldname": "test_campaign",
+   "fieldtype": "Check",
+   "label": "Test Campaign"
   },
   {
-   "fieldname": "read",
-   "fieldtype": "Int",
-   "label": "Read"
+   "depends_on": "eval: doc.test_campaign",
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number",
+   "mandatory_depends_on": "eval: doc.test_campaign"
   },
   {
-   "fieldname": "received",
-   "fieldtype": "Int",
-   "label": "Received"
-  },
-  {
-   "fieldname": "delivered",
-   "fieldtype": "Int",
-   "label": "Delivered"
-  },
-  {
-   "fieldname": "marked_as_seen",
-   "fieldtype": "Int",
-   "label": "Marked as Seen"
-  },
-  {
-   "fieldname": "sent",
-   "fieldtype": "Int",
-   "label": "Sent"
-  },
-  {
-   "fieldname": "failed",
-   "fieldtype": "Int",
-   "label": "Failed"
-  },
-  {
-   "fieldname": "total",
-   "fieldtype": "Int",
-   "label": "Total"
+   "depends_on": "eval: doc.test_campaign",
+   "fieldname": "send_template",
+   "fieldtype": "Button",
+   "label": "Send Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-08 18:05:58.878567",
+ "modified": "2025-01-10 16:42:43.305155",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",
