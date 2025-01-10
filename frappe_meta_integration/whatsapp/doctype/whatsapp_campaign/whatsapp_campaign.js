@@ -510,6 +510,7 @@ frappe.ui.form.on('WhatsApp Campaign', {
 });
 
 //added dashboard code
+let isFirstLoad = true;
 frappe.ui.form.on('WhatsApp Campaign', {
     refresh: function (frm) {
         let html = `
@@ -614,9 +615,9 @@ frappe.ui.form.on('WhatsApp Campaign', {
                         <div class="status-label">Delivered</div>
                         <div class="status-count">${frm.doc.delivered || 0}</div>
                     </div>
-                    <!-- Marked as Seen -->
-                    <div class="status-item marked-as-seen" data-status="Marked as Seen">
-                        <div class="status-label">Marked as Seen</div>
+                    <!-- Marked As Seen -->
+                    <div class="status-item marked-as-seen" data-status="Marked As Seen">
+                        <div class="status-label">Marked As Seen</div>
                         <div class="status-count">${frm.doc.marked_as_seen || 0}</div>
                     </div>
                     <!-- Failed -->
@@ -645,6 +646,7 @@ frappe.ui.form.on('WhatsApp Campaign', {
     },
 
     after_save: function (frm) {
+	if (frm.doc.docstatus !== 1) {
         frappe.call({
             method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.get_campaign_status_counts',
             args: {
@@ -656,6 +658,25 @@ frappe.ui.form.on('WhatsApp Campaign', {
                 }
             }
         });
+	}
+    },
+	
+    onload_post_render: function(frm) {
+        if (frm.doc.docstatus === 1 && isFirstLoad) {  // Only call if submitted
+            console.log("i am heree")
+            isFirstLoad = false;
+            frappe.call({
+                method: 'frappe_meta_integration.whatsapp.doctype.whatsapp_campaign.whatsapp_campaign.get_campaign_status_counts',
+                args: {
+                    name: frm.doc.name
+                },
+                callback: function (r) {
+                    if (r.message && r.message.success) {
+                        frm.reload_doc();
+                    }
+                }
+            });
+        }
     }
 });
 
