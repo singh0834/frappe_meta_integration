@@ -444,58 +444,58 @@ def send_scheduled_whatsapp():
 
 #added dashboard
 
-@frappe.whitelist()
-def get_campaign_status_counts(name):
-    # Define status types
-    status_types = [
-        "pending", "read", "received", "sent",
-        "delivered", "marked_as_seen", "failed"
-    ]
-    # Initialize status counts
-    status_counts = {status: 0 for status in status_types}
+# @frappe.whitelist()
+# def get_campaign_status_counts(name):
+#     # Define status types
+#     status_types = [
+#         "pending", "read", "received", "sent",
+#         "delivered", "marked_as_seen", "failed"
+#     ]
+#     # Initialize status counts
+#     status_counts = {status: 0 for status in status_types}
 
-    # Get all WhatsApp Communications for this campaign
-    records = frappe.get_all(
-        "WhatsApp Communication",
-        filters={"reference_dn": name},
-        fields=["status"]
-    )
+#     # Get all WhatsApp Communications for this campaign
+#     records = frappe.get_all(
+#         "WhatsApp Communication",
+#         filters={"reference_dn": name},
+#         fields=["status"]
+#     )
 
-    # Count statuses
-    for record in records:
-        status = record.get("status")
-        status = status.lower() if status else ""
-        if status in status_counts:
-            status_counts[status] += 1
+#     # Count statuses
+#     for record in records:
+#         status = record.get("status")
+#         status = status.lower() if status else ""
+#         if status in status_counts:
+#             status_counts[status] += 1
 
-    # Calculate total
-    total = sum(status_counts.values())
+#     # Calculate total
+#     total = sum(status_counts.values())
 
-    # Update the campaign document with integer fields
-    campaign = frappe.get_doc("WhatsApp Campaign", name)
+#     # Update the campaign document with integer fields
+#     campaign = frappe.get_doc("WhatsApp Campaign", name)
 
-    updates_needed = False
-    for status in status_types:
-        if campaign.get(status) != status_counts.get(status, 0):
-            updates_needed = True
-            break
-    if campaign.get("total") != total:
-        updates_needed = True
+#     updates_needed = False
+#     for status in status_types:
+#         if campaign.get(status) != status_counts.get(status, 0):
+#             updates_needed = True
+#             break
+#     if campaign.get("total") != total:
+#         updates_needed = True
 
-    if updates_needed:
-        campaign.db_set('pending', status_counts.get("pending", 0))
-        campaign.db_set('read', status_counts.get("read", 0))
-        campaign.db_set('received', status_counts.get("received", 0))
-        campaign.db_set('sent', status_counts.get("sent", 0))
-        campaign.db_set('delivered', status_counts.get("delivered", 0))
-        campaign.db_set('marked_as_seen', status_counts.get("marked_as_seen", 0))
-        campaign.db_set('failed', status_counts.get("failed", 0))
-        campaign.db_set("total", total)
+#     if updates_needed:
+#         campaign.db_set('pending', status_counts.get("pending", 0))
+#         campaign.db_set('read', status_counts.get("read", 0))
+#         campaign.db_set('received', status_counts.get("received", 0))
+#         campaign.db_set('sent', status_counts.get("sent", 0))
+#         campaign.db_set('delivered', status_counts.get("delivered", 0))
+#         campaign.db_set('marked_as_seen', status_counts.get("marked_as_seen", 0))
+#         campaign.db_set('failed', status_counts.get("failed", 0))
+#         campaign.db_set("total", total)
 
 
-    return {
-        "success": True,
-        "message": "Campaign counts retrieved and saved successfully",
-        "status_counts": status_counts,
-        "total": total
-    }
+#     return {
+#         "success": True,
+#         "message": "Campaign counts retrieved and saved successfully",
+#         "status_counts": status_counts,
+#         "total": total
+#     }
