@@ -848,9 +848,12 @@ async function updateStatusCounts(frm) {
         // Attach click handlers
         $(frm.fields_dict.overview.wrapper).on('click', '.status-item', function() {
             const status = $(this).data('status');
-            const url = new URL('/app/whatsapp-communication', window.location.origin);
-            url.searchParams.set('status', status);
-            window.location.href = decodeURIComponent(url.toString());
+	    if (status) {
+                const url = new URL('/app/whatsapp-communication', window.location.origin);
+                url.searchParams.set('status', status);
+	        url.searchParams.set('reference_dn', frm.doc.name);
+                window.location.href = decodeURIComponent(url.toString());
+	    }
         });
     } catch (error) {
         console.error('Error updating status counts:', error);
