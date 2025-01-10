@@ -728,7 +728,8 @@ async function updateStatusCounts(frm) {
 
         // Count statuses
         result.forEach(comm => {
-            const status = comm.status.toLowerCase().replace(' ', '_');
+            // const status = comm.status.toLowerCase().replace(' ', '_');
+	    const status = comm.status.toLowerCase().replace(/\s+/g, '_');
             if (counts.hasOwnProperty(status)) {
                 counts[status]++;
             }
