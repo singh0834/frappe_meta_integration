@@ -113,9 +113,10 @@
    "mandatory_depends_on": "eval:doc.media_type != ''"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-13 16:59:46.131272",
+ "modified": "2025-01-13 17:10:47.346169",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Message MSG91",
