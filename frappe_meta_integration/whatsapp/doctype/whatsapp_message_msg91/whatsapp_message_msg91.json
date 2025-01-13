@@ -26,18 +26,21 @@
    "fieldname": "template_name",
    "fieldtype": "Data",
    "label": "Template Name",
+   "read_only": 1,
    "unique": 1
   },
   {
    "fieldname": "language_code",
    "fieldtype": "Data",
-   "label": "Language Code"
+   "label": "Language Code",
+   "read_only": 1
   },
   {
    "fieldname": "category",
    "fieldtype": "Select",
    "label": "Category",
-   "options": "\nUTILITY\nMARKETING\nAUTHENTICATION"
+   "options": "\nUTILITY\nMARKETING\nAUTHENTICATION",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_yqxo",
@@ -47,7 +50,8 @@
    "default": "0",
    "fieldname": "header_has_media",
    "fieldtype": "Check",
-   "label": "Header Has Media"
+   "label": "Header Has Media",
+   "read_only": 1
   },
   {
    "depends_on": "header_has_media",
@@ -55,19 +59,22 @@
    "fieldtype": "Select",
    "label": "Media Type",
    "mandatory_depends_on": "header_has_media",
-   "options": "document\nimage\nvideo"
+   "options": "document\nimage\nvideo",
+   "read_only": 1
   },
   {
    "fieldname": "header",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Header"
+   "label": "Header",
+   "read_only": 1
   },
   {
    "fieldname": "footer",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Footer"
+   "label": "Footer",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_slek",
@@ -76,13 +83,15 @@
   {
    "fieldname": "template",
    "fieldtype": "Text",
-   "label": "Template"
+   "label": "Template",
+   "read_only": 1
   },
   {
    "fieldname": "parameter",
    "fieldtype": "Table",
    "label": "Parameter",
-   "options": "WhatsApp Template Map"
+   "options": "WhatsApp Template Map",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -93,7 +102,8 @@
   {
    "fieldname": "namespace",
    "fieldtype": "Data",
-   "label": "Namespace"
+   "label": "Namespace",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.media_type != ''",
@@ -105,7 +115,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-04 15:10:29.062309",
+ "modified": "2025-01-13 16:59:46.131272",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Message MSG91",

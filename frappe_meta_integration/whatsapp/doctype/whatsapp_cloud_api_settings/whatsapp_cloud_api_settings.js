@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('WhatsApp Cloud API Settings', {
 	refresh: function(frm) {
-    fetch_template(frm)
+    // fetch_template(frm)
 	}
 
 });
