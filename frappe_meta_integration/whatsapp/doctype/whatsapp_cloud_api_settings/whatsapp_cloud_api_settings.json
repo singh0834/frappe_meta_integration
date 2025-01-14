@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "enabled",
   "access_token",
   "business_account_id",
   "url",
@@ -14,7 +15,6 @@
   "phone_number_id",
   "webhook_verify_token",
   "version",
-  "enabled",
   "get_template_endpoint",
   "general_configuration_section",
   "welcome_message_template"
@@ -31,6 +31,7 @@
   {
    "fieldname": "business_account_id",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Business Account ID"
   },
   {
@@ -47,6 +48,7 @@
   {
    "fieldname": "webhook_verify_token",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Webhook Verify Token"
   },
   {
@@ -63,20 +65,26 @@
    "options": "WhatsApp Message Template"
   },
   {
+   "default": "control.msg91.com",
    "fieldname": "url",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "URL",
    "reqd": 1
   },
   {
+   "default": "/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
    "fieldname": "endpoint",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Endpoint",
    "reqd": 1
   },
   {
+   "default": "v5",
    "fieldname": "version",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Version"
   },
   {
@@ -86,15 +94,17 @@
    "label": "Enabled"
   },
   {
+   "default": "whatsapp/get-template-client",
    "fieldname": "get_template_endpoint",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Get Template Endpoint"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-04 12:32:56.952795",
+ "modified": "2025-01-14 15:51:49.700591",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Cloud API Settings",
