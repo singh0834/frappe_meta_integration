@@ -86,6 +86,6 @@ class WhatsAppMessageTemplate(Document):
 
 @frappe.whitelist()
 def set_template_parameters(whatsapp_message_template):
-	template_doc = frappe.get_doc('WhatsApp Message MSG91', whatsapp_message_template)
+	template_doc = frappe.get_doc('WhatsApp Templates', whatsapp_message_template)
 	frappe.log_error("h", template_doc.parameter)
 	return template_doc.parameter

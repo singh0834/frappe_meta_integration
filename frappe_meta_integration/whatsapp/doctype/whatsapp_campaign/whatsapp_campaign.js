@@ -493,8 +493,8 @@ frappe.ui.form.on('WhatsApp Campaign', {
           return;
       }
 
-      // Fetch the WhatsApp Message MSG91 document where the name matches whatsapp_message_template
-      frappe.db.get_doc('WhatsApp Message MSG91', cur_frm.doc.whatsapp_message_template)
+      // Fetch the WhatsApp Templates document where the name matches whatsapp_message_template
+      frappe.db.get_doc('WhatsApp Templates', cur_frm.doc.whatsapp_message_template)
           .then((doc) => {
               if (doc) {
                   const parameter_table = doc.parameter || [];

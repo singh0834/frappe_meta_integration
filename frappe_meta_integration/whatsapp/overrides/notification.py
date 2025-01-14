@@ -32,7 +32,7 @@ class SendNotification(Notification):
 		whatsapp_template = self.whatsapp_template
 		if not whatsapp_template:
 			return
-		whatsapp_template = frappe.get_doc("WhatsApp Message MSG91", whatsapp_template)
+		whatsapp_template = frappe.get_doc("WhatsApp Templates", whatsapp_template)
 		template_parameters = frappe.render_template(self.message, context)
 		params = json.loads(template_parameters)
 		frappe.log_error("hi", [params, whatsapp_template])
@@ -55,11 +55,19 @@ class SendNotification(Notification):
 		# 	pdf_link = file_ref.file_url
 		# 	file_name = file_ref.file_name
 		url = ""
-		if whatsapp_template.get("header_has_media"):
-			if "https" in params.get("header_1"):
+		if "https" in params.get("header_1"):
 				url = params.get("header_1")
+				frappe.log_error("if url", url)
+		else:
+			url = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
+			if "https" in url:
+				pass
 			else:
-				url = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
+				domain = frappe.conf.get('domains')
+				if len(domain)>0:
+					url = f"https://{domain[0]}{urllib.parse.quote(params.get('header_1'))}"
+					
+			frappe.log_error("if else", url)
 		WhatsAppCommunication.send_whatsapp_message(
 			receiver_list=self.get_receiver_list(doc, context),
 			message=frappe.render_template(self.message, context),

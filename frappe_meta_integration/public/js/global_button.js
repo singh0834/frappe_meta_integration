@@ -97,7 +97,7 @@ function create_recipients_dailog(frm){
 				fieldtype: "Link",
 				reqd: 1,
 				fieldname: "whatsapp_template",
-				options: "WhatsApp Message MSG91",
+				options: "WhatsApp Templates",
 				"get_query": function () {
 					return {
 						filters: {
@@ -112,7 +112,7 @@ function create_recipients_dailog(frm){
 					content.refresh()
 					if(this.value){
 						console.log(this.value)
-						frappe.db.get_doc("WhatsApp Message MSG91", this.value)
+						frappe.db.get_doc("WhatsApp Templates", this.value)
 						.then((data) => {
 							counter += 1
 							if (counter == 1) {

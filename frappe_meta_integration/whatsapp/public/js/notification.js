@@ -71,7 +71,7 @@ frappe.ui.form.on('Notification', {
 				title: ("Map Fields"),
 			});
 			if(frm.doc.whatsapp_template){
-				frappe.db.get_doc("WhatsApp Message MSG91", frm.doc.whatsapp_template)
+				frappe.db.get_doc("WhatsApp Templates", frm.doc.whatsapp_template)
 				.then((data) => {
 					counter += 1
 					if (counter == 1) {
@@ -200,7 +200,7 @@ setup_whatsapp_template: function (frm) {
 	if (frm.doc.channel === 'WhatsApp') {
 
 		if (frm.doc.whatsapp_template != undefined) {
-			frappe.db.get_doc("WhatsApp Message MSG91", frm.doc.whatsapp_template)
+			frappe.db.get_doc("WhatsApp Templates", frm.doc.whatsapp_template)
 				.then((data) => {
 					console.log(data,"data")
 					frm.fields_list = data.parameter

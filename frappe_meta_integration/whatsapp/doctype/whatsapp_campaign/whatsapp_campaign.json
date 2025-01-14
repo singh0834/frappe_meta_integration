@@ -67,7 +67,7 @@
    "fieldname": "whatsapp_message_template",
    "fieldtype": "Link",
    "label": "WhatsApp Message Template",
-   "options": "WhatsApp Message MSG91"
+   "options": "WhatsApp Templates"
   },
   {
    "default": "WA-CMP-.YYYY.-",
@@ -270,7 +270,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-10 16:42:43.305155",
+ "modified": "2025-01-14 12:35:26.633163",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Campaign",

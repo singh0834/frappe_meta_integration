@@ -53,7 +53,7 @@ function create_recipients_dialog(frm) {
                 fieldtype: "Link",
                 reqd: 1,
                 fieldname: "whatsapp_template",
-                options: "WhatsApp Message MSG91",
+                options: "WhatsApp Templates",
                 get_query: function () {
                     return { filters: { "enabled": 1 } };
                 },
@@ -123,7 +123,7 @@ function clear_previous_template_fields(d) {
 function fetch_template_data(templateId, d, context) {
     let counter = 0;
     console.log(templateId)
-    frappe.db.get_doc("WhatsApp Message MSG91", templateId).then((data) => {
+    frappe.db.get_doc("WhatsApp Templates", templateId).then((data) => {
         counter += 1;
         console.log(counter)
         cur_frm.dialog_counter = counter
@@ -246,6 +246,7 @@ function update_template_content(template, d) {
 
 // Primary action: Send WhatsApp message
 function dialog_primary_action(frm, values, context) {
+    frappe.dom.freeze(__("Sending WhatsApp..."))
     frappe.call({
         method: "frappe_meta_integration.whatsapp.utils.send_whatsapp_msg",
         args: {
@@ -254,8 +255,10 @@ function dialog_primary_action(frm, values, context) {
             "args": values,
             "template_parameter":context
         },
-        freeze: true,
-        freeze_message: ('Sending WhatsApp Message.!!')
+        callback: function(r){
+            frm.refresh();
+            frappe.dom.unfreeze();
+        }
     });
 }
 

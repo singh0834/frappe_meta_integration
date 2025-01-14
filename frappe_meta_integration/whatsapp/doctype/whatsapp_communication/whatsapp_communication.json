@@ -41,9 +41,11 @@
   "references_section",
   "reference_dt",
   "campaign_name",
+  "campaign_request_id",
   "column_break_ivnb",
   "reference_dn",
-  "campaign_reipient_name"
+  "campaign_reipient_name",
+  "failure_reason"
  ],
  "fields": [
   {
@@ -114,6 +116,7 @@
   {
    "fieldname": "message_id",
    "fieldtype": "Data",
+   "ignore_user_permissions": 1,
    "in_list_view": 1,
    "label": "Message ID",
    "read_only": 1,
@@ -195,7 +198,7 @@
    "fieldname": "whatsapp_message_template",
    "fieldtype": "Link",
    "label": "WhatsApp Message Template",
-   "options": "WhatsApp Message MSG91",
+   "options": "WhatsApp Templates",
    "read_only_depends_on": "message_id"
   },
   {
@@ -301,13 +304,25 @@
    "fieldtype": "Data",
    "label": "campaign_reipient_name",
    "read_only": 1
+  },
+  {
+   "fieldname": "campaign_request_id",
+   "fieldtype": "Small Text",
+   "ignore_user_permissions": 1,
+   "label": "campaign_request_id"
+  },
+  {
+   "fieldname": "failure_reason",
+   "fieldtype": "Small Text",
+   "label": "Failure Reason",
+   "read_only": 1
   }
  ],
  "image_field": "media_image",
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2025-01-03 12:52:55.506852",
+ "modified": "2025-01-14 12:35:26.300286",
  "modified_by": "Administrator",
  "module": "WhatsApp",
  "name": "WhatsApp Communication",

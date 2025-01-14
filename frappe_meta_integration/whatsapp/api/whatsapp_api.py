@@ -32,7 +32,7 @@ def get_message_templates():
             'authkey': authKey
         }
 
-        saved_templates = [x.name for x in frappe.get_list("WhatsApp Message MSG91")]
+        saved_templates = [x.name for x in frappe.get_list("WhatsApp Templates")]
         conn = http.client.HTTPSConnection(url)
 
         conn.request("GET", f"/api/{version}/{get_template_endpoint}/{integrated_number}", headers=headers)
@@ -175,7 +175,7 @@ def create_template_records(data):
                     'parameter': parameters
                 }
                 existing_template = frappe.db.exists(
-                    "WhatsApp Message MSG91",
+                    "WhatsApp Templates",
                     {
                         "name": template_name
                     }
@@ -183,7 +183,7 @@ def create_template_records(data):
                 if existing_template:
                     continue
                 doc = frappe.get_doc({
-                    'doctype': 'WhatsApp Message MSG91',
+                    'doctype': 'WhatsApp Templates',
                     'enabled': 1,
                     **template_record
                 })

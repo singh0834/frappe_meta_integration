@@ -98,7 +98,6 @@ def send_whatsapp_msg(doctype, docname, args, template_parameter):
 	"""
 	Generate mediaif exists and send message
 	"""
-	frappe.log_error("hi",[doctype, docname, args, template_parameter])
 	pdf_link = None
 	file_name = None
 	if args and isinstance(args, str):
@@ -134,7 +133,7 @@ def send_whatsapp_msg(doctype, docname, args, template_parameter):
 	# Calling Method from whatsApp Communication model to send the template
 	# template_parameter = str(template_parameter)
 	template_in_json = json.loads(template_parameter)
-	template = frappe.get_doc("WhatsApp Message MSG91", template)
+	template = frappe.get_doc("WhatsApp Templates", template)
 	url = ""
 	if template.get("header_has_media"):
 		if "https" in template_in_json.get("header_1"):

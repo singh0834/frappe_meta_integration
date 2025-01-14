@@ -1,7 +1,7 @@
 // Copyright (c) 2018, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
 
-frappe.listview_settings["WhatsApp Message MSG91"] = {
+frappe.listview_settings["WhatsApp Templates"] = {
     onload:function(listview){
         listview.page.add_inner_button("Fetch Templates", function() {
             frappe.show_progress('Fetching WhatsApp Templates...', 70, 100, 'Please wait');

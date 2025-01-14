@@ -19,7 +19,7 @@ def process_template_parameter(template = None, template_parameter = None, heade
 		template_parameter = template_parameter
 	items = []
 	if template:
-		template_doc = frappe.get_doc("WhatsApp Message MSG91", template)
+		template_doc = frappe.get_doc("WhatsApp Templates", template)
 		for row in template_doc.parameter:
 			temp = {}
 			temp["parameter"] = row.get("field_name")
@@ -247,11 +247,12 @@ class WhatsAppCommunication(Document):
 		if isinstance(receiver_list, string_types):
 			if not isinstance(receiver_list, list):
 				receiver_list = [receiver_list]
-
+		frappe.log_error("receiver_list", receiver_list)
 		for rec in receiver_list:
 			"""
 			Iterate receiver_list and send message to each recepient
 			"""
+			frappe.log_error("rec", rec)
 			self.create_whatsapp_message(self.validate_and_normalize_number(self, rec), message, template, doctype, docname, template_parameter, media, file_name, header_media) #For Text Message or Caption for documents
 			if media and file_name:
 				self.create_whatsapp_message(self.validate_and_normalize_number(self, rec), message, template, doctype, docname, template_parameter, media, file_name, header_media) #For Document
