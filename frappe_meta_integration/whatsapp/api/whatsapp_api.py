@@ -60,6 +60,7 @@ def parse_templates(data):
         
         templates = []
         for template_data in data.get('data', []):
+            flag = False
             template = {
                 'category': template_data.get('category'),
                 'name': template_data.get('name'),
@@ -68,6 +69,8 @@ def parse_templates(data):
             }
 
             for language_data in template_data.get('languages', []):
+                if language_data.get('status') == 'REJECTED' and language_data.get('rejection_reason') != None:
+                    flag  = True
                 language = {
                     'id': language_data.get('id'),
                     'language': language_data.get('language'),
@@ -93,8 +96,8 @@ def parse_templates(data):
                                 language['code'].append({'type': 'BUTTONS', 'text': button['text'], 'url': button['url']})
                 
                 template['languages'].append(language)
-            
-            templates.append(template)
+            if flag:
+                templates.append(template)
 
         return templates
     except Exception as e:
