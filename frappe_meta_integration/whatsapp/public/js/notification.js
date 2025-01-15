@@ -65,7 +65,7 @@ frappe.ui.form.on('Notification', {
 					}
 				},
 				primary_action_label: __("Map"),
-				no_submit_on_enter: true,
+				no_submit_on_enter: false,
 				size: 'large',
 				minimizable: true,
 				title: ("Map Fields"),
@@ -177,7 +177,7 @@ frappe.ui.form.on('Notification', {
 				});
 			}
 			d.show();
-			d.get_primary_btn()[0].disabled = true
+			d.get_primary_btn()[0].disabled = false
 	},
 // 	setup_whatsapp_template: function(frm) {
 // 		let template = '';

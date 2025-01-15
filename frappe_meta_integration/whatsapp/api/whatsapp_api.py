@@ -40,6 +40,7 @@ def get_message_templates():
         res = conn.getresponse()
         data = res.read()
         response = json.loads(data.decode("utf-8"))
+        frappe.log_error("reposene when fetch", response)
         parsed_data = parse_templates(response)
         create_template_records(parsed_data)
         return [True, "WhatsApp Templates Fetched Successfully"]

@@ -502,7 +502,7 @@ frappe.ui.form.on('WhatsApp Campaign', {
 
                   // Iterate over the parameter child table to get field_name
                   for (let row of parameter_table) {
-                      if (row.field_name) {
+                      if ((row.location != 'header') || (row.location == 'header' && row.type == 'text') ) {
                           field_names.push(row.field_name);
                       }
                   }

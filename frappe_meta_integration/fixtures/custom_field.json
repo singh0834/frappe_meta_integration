@@ -378,7 +378,7 @@
     "collapsible_depends_on": null,
     "columns": 0,
     "default": null,
-    "depends_on": "eval:doc.document_type && (doc.event=='Days After' || doc.event=='Days Before')",
+    "depends_on": "eval:doc.document_type && (doc.event=='Days After' || doc.event=='Days Before') && doc.delay_enabled",
     "description": null,
     "docstatus": 0,
     "doctype": "Custom Field",
