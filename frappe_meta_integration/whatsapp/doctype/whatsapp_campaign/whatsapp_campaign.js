@@ -64,11 +64,11 @@ frappe.ui.form.on('WhatsApp Campaign', {
         },
         callback: function(r) {
           console.log(r)
-          if(r.get('message') == "success"){
+          if(r['message'] == "success"){
             frappe.msgprint("Message Sent Successfully")
           }
           else{
-            frappe.msgprint("Message Sent Failed, check Error Log")
+            frappe.msgprint("Message Sent Failed, Check Error Log")
           }
         }
       });
