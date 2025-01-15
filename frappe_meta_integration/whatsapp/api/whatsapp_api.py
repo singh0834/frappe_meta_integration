@@ -191,7 +191,7 @@ def create_template_records(data):
                     continue
                 doc = frappe.get_doc({
                     'doctype': 'WhatsApp Templates',
-                    'enabled': 1,
+                    'enabled': 0,
                     **template_record
                 })
                 doc.insert()
