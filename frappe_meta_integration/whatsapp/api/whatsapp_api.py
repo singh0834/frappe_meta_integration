@@ -69,6 +69,7 @@ def parse_templates(data):
             }
 
             for language_data in template_data.get('languages', []):
+                frappe.log_error("state",language_data.get('status'))
                 if language_data.get('status') == 'REJECTED':
                     flag  = True
                     frappe.log_error("stat", language_data.get('status'))
