@@ -43,13 +43,18 @@ frappe.ui.form.on('Notification', {
 				{ 'label': __("Content"), 'fieldname': 'content', 'fieldtype': 'HTML' },
 			],
 			primary_action: function (values) {
+				console.log(values, "values")
 				if (frm.doc.message != "" && frm.doc.message != "Add your message here"){
 					frappe.confirm('This will overwrite the message. Are you sure you want to proceed?',
 						() => {
+							
+							let context = values
+							context.header_1 = context.header_1_attachment;
+							delete context.header_1_attachment;
 							// action to perform if Yes is selected
-							frm.doc.message = JSON.stringify(context)
+							frm.doc.message = JSON.stringify(values)
 							refresh_field("message")
-							for (const [k, value] of Object.entries(context)) {
+							for (const [k, value] of Object.entries(values)) {
 								frm.doc.whatsapp_parameter.forEach((f) =>{
 									if(f.parameter == k){
 										f.value = value
@@ -74,10 +79,13 @@ frappe.ui.form.on('Notification', {
 				frappe.db.get_doc("WhatsApp Templates", frm.doc.whatsapp_template)
 				.then((data) => {
 					counter += 1
+					console.log("Hello 0")
 					if (counter == 1) {
+						console.log("Hello")
 						// cur_frm.broadcast_name = data.broadcast_name
 						let elements = document.getElementsByClassName("modal-body ui-front");
-						Array.from(elements).forEach((e) => { e.addEventListener("click", function () { verify(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict); }); })
+
+						Array.from(elements).forEach((e) => {console.log(e,"hi"), e.addEventListener("click", function () { ver(console.log(e, cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict), cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict); }); })
 						cur_frm.fields_list = data.parameter
 						let option_list = ["Attachment"]
 						// if (frappe.model.can_print(null, cur_frm) && !meta.issingle) {
@@ -108,7 +116,7 @@ frappe.ui.form.on('Notification', {
 								"label": __("Attachment"),
 								"fieldtype": "Attach",
 								"fieldname": e.field_name + "_attachment",
-								"hidden": true
+								// "read_only": true
 							})
 							d.get_field(e.field_name + "_attachment").refresh()
 							if(e.location == "header"){
@@ -156,7 +164,7 @@ frappe.ui.form.on('Notification', {
 										d.get_field(e.field_name + "_print_format").df.hidden = true
 										d.get_field(e.field_name + "_print_format").refresh()
 									}
-									verify(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict)
+									ver(cur_frm.dialog_d, cur_frm.dialog_context, cur_frm.dialog_data, cur_frm.dialog_header_html, cur_frm.data_dict)
 								}
 							}
 						})
@@ -257,7 +265,8 @@ setup_whatsapp_template: function (frm) {
 });
 
 
-function verify(d, context, data, header_html, data_dict) {
+function ver(d, context, data, header_html, data_dict) {
+	console.log("from back")
 	console.log(d, context, data_dict)
 	for (const [key, value] of Object.entries(context)) {
 		if ((d.get_field(key).input.value).replace(", ", "") == "Attachment") {

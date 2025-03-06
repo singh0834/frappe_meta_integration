@@ -185,7 +185,13 @@ class WhatsAppCampaign(Document):
                     filters=formatted_filters,
                     fields=["customer_name", "mobile_no"]
                 )
-
+            elif doctype_meta.name == 'Post Sales':
+                records = frappe.db.get_list(
+                    "Post Sales",
+                    filters=formatted_filters,
+                    fields=["patient_name", "mobile_number"]
+                )
+                
             recipients = [] 
             recipient_data = {}
             for record in records:
@@ -202,6 +208,9 @@ class WhatsAppCampaign(Document):
                 elif doctype_meta.name == 'Customer':
                     phone = record.mobile_no
                     name = record.customer_name
+                elif doctype_meta.name == 'Post Sales':
+                    phone = record.mobile_number
+                    name = record.patient_name
 
                 if phone:
                     phone = str(phone).strip()

@@ -34,8 +34,9 @@ class SendNotification(Notification):
 			return
 		whatsapp_template = frappe.get_doc("WhatsApp Templates", whatsapp_template)
 		template_parameters = frappe.render_template(self.message, context)
-		params = json.loads(template_parameters)
-		frappe.log_error("hi", [params, whatsapp_template])
+		if template_parameters:
+			params = json.loads(template_parameters)
+			frappe.log_error("hi", [params, whatsapp_template])
   
 		"""
 		Generate mediaif exists and send message
@@ -55,26 +56,27 @@ class SendNotification(Notification):
 		# 	pdf_link = file_ref.file_url
 		# 	file_name = file_ref.file_name
 		url = ""
-		if "https" in params.get("header_1"):
-				url = params.get("header_1")
-				frappe.log_error("if url", url)
-		else:
-			url = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
-			if "https" in url:
-				pass
+		if template_parameters:
+			if "https" in params.get("header_1"):
+					url = params.get("header_1")
+					frappe.log_error("if url", url)
 			else:
-				domain = frappe.conf.get('domains')
-				if len(domain)>0:
-					url = f"https://{domain[0]}{urllib.parse.quote(params.get('header_1'))}"
-					
-			frappe.log_error("if else", url)
+				url = f'{frappe.utils.get_url()}{urllib.parse.quote(params.get("header_1"))}'
+				if "https" in url:
+					pass
+				else:
+					domain = frappe.conf.get('domains')
+					if len(domain)>0:
+						url = f"https://{domain[0]}{urllib.parse.quote(params.get('header_1'))}"
+
+		frappe.log_error("if else", url)
 		WhatsAppCommunication.send_whatsapp_message(
 			receiver_list=self.get_receiver_list(doc, context),
 			message=frappe.render_template(self.message, context),
 			template = whatsapp_template.name,
 			doctype = self.doctype,
 			docname = self.name,
-			template_parameter = params,
+			template_parameter = params if template_parameters else None,
 			media = pdf_link,
 			file_name = file_name,
 			header_media = url if whatsapp_template.get("header_has_media") else None
